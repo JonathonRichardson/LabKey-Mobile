@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns='http://www.springframework.org/schema/beans'
+       xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+       xmlns:util='http://www.springframework.org/schema/util'
+       xsi:schemaLocation='http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd'>
+    <bean id='moduleBean' class='@@ModuleClass@@'>
+        <constructor-arg index='0'><value type='java.lang.String'>@@Name@@</value></constructor-arg>
+        <property name='author' value='@@Author@@'/>
+        <property name='buildOS' value='@@BuildOS@@'/>
+        <property name='buildPath' value='@@BuildPath@@'/>
+        <property name='buildTime' value='@@BuildTime@@'/>
+        <property name='buildUser' value='@@BuildUser@@'/>
+        <property name='description' value='@@Description@@'/>
+        <property name='enlistmentId' value='@@EnlistmentId@@'/>
+        <property name='label' value='@@Label@@'/>
+        <property name='license' value='@@License@@'/>
+        <property name='licenseUrl' value='@@LicenseURL@@'/>
+        <property name='maintainer' value='@@Maintainer@@'/>
+        <property name='moduleDependencies' value='@@ModuleDependencies@@'/>
+        <property name='name' value='@@Name@@'/>
+        <property name='organization' value='@@Organization@@'/>
+        <property name='organizationUrl' value='@@OrganizationURL@@'/>
+        <property name='requiredServerVersion' value='@@RequiredServerVersion@@'/>
+        <property name='sourcePath' value='@@SourcePath@@'/>
+        <property name='svnRevision' value='@@Revision@@'/>
+        <property name='url' value='@@InfoURL@@'/>
+        <property name='svnUrl' value='@@URL@@'/>
+        <property name='version' value='@@Version@@'/>
+    </bean>
+</beans>
