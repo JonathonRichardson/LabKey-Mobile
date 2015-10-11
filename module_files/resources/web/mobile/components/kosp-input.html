@@ -1,0 +1,6 @@
+<div data-role="fieldcontain" class="ui-hide-label">
+    <label for="{{guid}}">{{text}}:</label>
+    <input id="{{guid}}" type="{{type}}" placeholder="{{text}}" autocorrect="off" autocapitalize="off"
+            data-bind="textInput: value">
+    <span data-bind="template: { nodes: [document.createElement('span')], afterRender: init }"></span>
+</div>

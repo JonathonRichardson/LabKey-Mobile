@@ -1,0 +1,9 @@
+{{#with: cage}}
+<div data-role="collapsible" data-collapsed="false">
+    <h3>Cage: {{cage}}</h3>
+    {{#foreach: animals}}
+        <ehr-irobs-animalview params="animal: $data"></ehr-irobs-animalview>
+    {{/foreach}}
+</div>
+{{/with}}
+<span data-bind="template: { afterRender: init }"></span>

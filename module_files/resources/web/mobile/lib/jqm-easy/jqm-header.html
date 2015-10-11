@@ -1,0 +1,6 @@
+<!-- Header -->
+<div data-role="header" data-position="fixed">
+    <h1 style="margin: 7px" data-bind="click: function() { Home($root) }">{{title}}</h1>
+
+    <div data-bind="template: {nodes: innerHTML, afterRender: jqmEnhance}"></div>
+</div>

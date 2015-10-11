@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>EHR Mobile</title>
+
+    <script>
+        // Clear the hash, to ensure we start out on the splash screen.
+        //document.location.hash = '';
+        var _switchToPage = function(page) {
+            var curHashParams = location.hash;
+            if ( curHashParams.indexOf("?") === -1 ) {
+                curHashParams = "";
+            }
+            else {
+                curHashParams = curHashParams.substr(curHashParams.indexOf("?") + 1);
+            }
+            document.location.hash = '#' + page + '?' + curHashParams;
+        };
+        _switchToPage('loginPage');
+
+        // Configure RequireJS
+        require = {
+            waitSeconds: 0,
+            paths: {
+                "text":              "lib/requirejs-text",
+                "jqm":               "lib/require-jqm",
+                "jquery":            "lib/jquery-1.11.3.min",
+                "knockout":          "lib/knockout-3.3.0",
+                "knockout.mapping":  "lib/knockout.mapping-2.4.1",
+                "knockout.punches":  "lib/knockout-punches",
+                "knockout.switch":   "lib/knockout-switch",
+                "underscore":        "lib/underscore-min",
+                "jquery.mobile":     "lib/jquery.mobile-1.4.5/jquery.mobile-1.4.5",
+                "jquery.breadcrumb": "lib/jquery.jBreadCrumb.1.1",
+                "jquery.easing":     "lib/jquery.easing.1.3",
+                "jquery.ui":         "lib/jquery-ui/jquery-ui.min",
+                "primate-skin":      "ehr-test.min",
+                "jqm-easy":          "lib/jqm-easy",
+                "jqm-router":        "lib/jqm-router",
+                "routes":            "routes",
+                "classify":          "lib/classify",
+                "js-cookie":         "lib/js-cookie"
+            },
+            shim: {
+                "jquery.ui": ["jquery"],
+                "jquery.mobile": ["jqm-router"],
+                "routes": ["jqm-router"],
+                "primate-skin": ["jquery.mobile"],
+                "jquery.easing": ["jquery"],
+                "jquery.breadcrumb": ["jquery.easing"],
+                "underscore": {
+                    exports: "_"
+                },
+                "knockout.punches": {
+                    deps: ["knockout"]
+                },
+                "knockout.switch": {
+                    deps: ["knockout.punches", "knockout"]
+                }
+            }
+        };
+    </script>
+    <script src="lib/require.js" data-main="mobile-main"></script>
+
+    <!-- jQuery and jQuery Mobile -->
+    <link rel="stylesheet" href="lib/jquery.mobile-1.4.5/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="lib/jquery-ui/jquery-ui.min.css"/>
+
+    <!-- jQuery Breadcrumb plug-in -->
+    <link rel="stylesheet" href="lib/Styles/Base.css"/>
+    <link rel="stylesheet" href="lib/Styles/BreadCrumb.css"/>
+
+    <!-- Primate Center CSS -->
+    <link rel="stylesheet" href="ehr-test.min.css"/>
+
+    <!-- EHRMobile CSS -->
+    <link rel="stylesheet" href="ehrmobile.css"/>
+
+    <!-- Set Viewport for jQuery Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+
+<!-- Login Page -->
+<div data-role="page" id="loginPage" class="ehrmobile-login-page">
+    <div id="loginDialog" class="ehrmobile-login" data-bind="OnEnter: $root.login">
+    {{#switch: $root.loginInfo.state}}
+        {{#case: 'loggingin'}}
+            <span>Logging In...</span>
+        {{/case}}
+
+        {{#case: $default}}
+            <p style="text-align: center">Please Log in.</p>
+            <kosp-input params="text: 'Username (email)', value: $root.loginInfo.username                  "></kosp-input>
+            <kosp-input params="text: 'Password',         value: $root.loginInfo.password, type: 'password'"></kosp-input>
+            <button data-role="button" id="login-button" data-bind="click: $root.login">Login</button>
+        {{/case}}
+    {{/switch}}
+    </div>
+</div>
+
+<style>
+    /*
+     * This fixes an issue where the main page can otherwise shrink and show a large block of black
+     * at the bottom of the screen on iOS.  This usually only happens after viewing collapsibles.
+     */
+    #mainContentPage {
+        min-height: 100%;
+    }
+</style>
+<div data-role="page" id="mainContentPage">
+    <jqm-header params="title: 'EHR'" data-enhance="false">
+        <button class="ui-icon-gear" data-bind="click: $root.ShowAccountPanel">{{$parent.user.DisplayName}}</button>
+        <button class="ui-icon-grid" data-bind="click: $root.ShowMenuPanel"     >Menu</button>
+
+        <!-- Navigation Breadcrumbs -->
+        <div class="breadCrumbHolder module">
+            <div class="breadCrumb module">
+                <ul class="breadcrumb" data-enhance="false">
+                    <li class="first" data-bind="click: $root.GoHome"><a href="#"></a></li>
+                    {{#foreach: $root.BreadCrumbs}}
+                      <li data-bind="css: { 'last': isLast }, NavigateTo: location"><a href="#">{{Name}}</a></li>
+                    {{/foreach}}
+                </ul>
+            </div>
+        </div>
+    </jqm-header>
+
+    <!-- Footer -->
+    <jqm-footer data-enhance="false">
+        <a href="#" data-bind="click: $root.Back" data-role="button" data-icon="back">Back</a>
+    </jqm-footer>
+
+    <!-- Container for the Page Stack -->
+    <div id="mainContainer" role="main" class="ui-content"></div>
+</div>
+
+
+<jqm-panel id="jqm-panel-account">
+    <button data-bind="click: $root.logout">Log Out</button>
+</jqm-panel>
+
+<jqm-panel id="jqm-panel-menu" side="right">
+    <button>Does Nothing Yet</button>
+</jqm-panel>
+
+
+<!-- Initial Splash Screen -->
+<div class="div-hider" style=""></div>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+{{#with: animal}}
+<div data-role="collapsible">
+    <h4>{{Id}}</h4>
+    <form>
+        <div class="ui-grid-a" style="padding-right: 10px">
+            <div data-role="fieldcontain" class="ui-block-a">
+                <label for="feces-{{Id}}">Feces:</label>
+                <select name="feces-{{Id}}" id="feces-{{Id}}">
+                    <option value="">None</option>
+                    <option value="B">Bloody Diarrhea</option>
+                    <option value="BF">Bloody Feces</option>
+                    <option value="D">Diarrhea</option>
+                    <option value="FS">Firm Stool</option>
+                    <option value="MU">Mucus</option>
+                    <option value="SF">Soft Feces</option>
+                    <option value="WD">Water Diarrhea</option>
+                </select>
+
+                <label for="menses-{{Id}}">Menses:</label>
+                <select name="menses-{{Id}}">
+                    <option>None</option>
+                    <option>Heavy Mens</option>
+                    <option>Heavy After Birth Bleeding</option>
+                    <option>Light Mens</option>
+                    <option>Light After Birth Bleeding</option>
+                    <option>Regular Mens</option>
+                    <option>Regular after Birth Bleeding</option>
+                </select>
+
+                <label for="other-{{Id}}">Other:</label>
+                <select name="other-{{Id}}" >
+                    <option>None</option>
+                    <option>Lethargic</option>
+                    <option>Newborn Infant(s)</option>
+                    <option>Not Eating</option>
+                    <option>Rectal Prolapse</option>
+                    <option>Trauma</option>
+                    <option>Vaginal Prolapse</option>
+                    <option>Vomit</option>
+                </select>
+            </div>
+
+
+            <div class="ui-block-b" style="padding-left: 10px">
+                <label>Remarks</label>
+                <textarea></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+{{/with}}
+<span data-bind="template: { afterRender: init }"></span>
