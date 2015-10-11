@@ -1,0 +1,19 @@
+{
+  "name": "labkey-mobile",
+  "version": "0.1.0",
+  "description": "Generates mobile module for use with Labkey",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonathonRichardson/LabKey-Mobile.git"
+  },
+  "author": "Jon Richardson",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/JonathonRichardson/LabKey-Mobile/issues"
+  },
+  "homepage": "https://github.com/JonathonRichardson/LabKey-Mobile#readme"
+}
