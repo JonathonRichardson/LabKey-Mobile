@@ -10,6 +10,16 @@ var bump     = require('gulp-bump'),
     fs       = require('fs');
   
 exports.addTasks = function(gulp) {
+  var cleanFiles = function() {
+    del(['deploy']);
+  };
+
+  var die = function() {
+    console.error.apply(this, arguments);
+    cleanFiles();
+    process.exit(1);
+  };
+
   var getBuildTimestamp = function() {
     var time = new Date();
   
@@ -33,9 +43,8 @@ exports.addTasks = function(gulp) {
     if ( _mod_name === null ) {
       var props = getPackageProperties();
 
-      if ( !props || !('Name' in props) || (props.Name.toString().length < 1) ) {
-        console.error("Invalid package name");
-        process.exit(1);
+      if ( !props || !('name' in props) || (props.name.toString().length < 1) ) {
+        die("Invalid package name.");
       }
 
       _mod_name = props.name;
@@ -55,8 +64,7 @@ exports.addTasks = function(gulp) {
   });
   
   gulp.task('clean', function(cb) {
-    del(['deploy']);
-    //fs.mkdirSync('deploy');
+    cleanFiles();
     cb();
   });
   
@@ -67,8 +75,7 @@ exports.addTasks = function(gulp) {
       var props = jsonfile.readFileSync( path.join(process.cwd(),'module.properties.json') );
     }
     catch (error) {
-      console.error("You must include a file named 'module.properties.json' in the root of the module.  Received the following error: ", error);
-      process.exit(1);
+      die("You must include a file named 'module.properties.json' in the root of the module.  Received the following error: ", error);
     }
     var stream = gulp.src([ path.join(__dirname,'../template_files/module.template.xml') ])
      
@@ -96,7 +103,7 @@ exports.addTasks = function(gulp) {
     });
   
     // Rename the file and write it out
-    stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config'));
+    stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config') ));
   });
   
   gulp.task('copy_files', ['init'], function() {
