@@ -1,0 +1,11 @@
+{
+  Name:        'mobile',
+  ModuleClass: 'org.labkey.mobile.mobileModule',
+  Label:       'Mobile interface for LabKey',
+  Description: 'FIXME! Write a paragraph describing the functionality and the ' +
+                 'purpose of this module. The description should contain multiple scentences.',
+  URL:         'http://example.com/FIXME',
+  Author:      'Jon Richardson',
+  License:     'Apache 2.0',
+  LicenseURL:  'http://www.apache.org/licenses/LICENSE-2.0'
+}
