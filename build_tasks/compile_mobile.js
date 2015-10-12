@@ -7,6 +7,7 @@ var bump     = require('gulp-bump'),
     del      = require('del'),
     os       = require('os'),
     path     = require('path'),
+    gutil    = require('gulp-util'),
     fs       = require('fs');
   
 exports.addTasks = function(gulp) {
@@ -15,7 +16,14 @@ exports.addTasks = function(gulp) {
   };
 
   var die = function() {
-    console.error.apply(this, arguments);
+    var args = Array.prototype.slice.call(arguments);
+    args = _.map(args, function(value) {
+      if ( typeof(value) === 'string' ) {
+        value = gutil.colors.red(value);
+      }
+      return value;
+    });
+    gutil.log.apply(this, args);
     cleanFiles();
     process.exit(1);
   };
@@ -44,7 +52,7 @@ exports.addTasks = function(gulp) {
       var props = getPackageProperties();
 
       if ( !props || !('name' in props) || (props.name.toString().length < 1) ) {
-        die("Invalid package name.");
+        die("Invalid or missing package name.");
       }
 
       _mod_name = props.name;
