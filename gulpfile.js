@@ -1,6 +1,5 @@
-var gulp = require('gulp'),
-    requireDir = require('require-dir');
+var gulp = require('gulp');
 
-requireDir('./build_tasks');
+require('./build_tasks/compile_mobile.js').addTasks(gulp);
 
 gulp.task('default', ['build_mobile']);
