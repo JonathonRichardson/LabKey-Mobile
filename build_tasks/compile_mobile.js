@@ -27,6 +27,26 @@ exports.addTasks = function(gulp) {
     var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     return json;
   };
+
+  var _mod_name = null;
+  var getModuleName = function() {
+    if ( _mod_name === null ) {
+      var props = getPackageProperties();
+
+      if ( !props || !('Name' in props) || (props.Name.toString().length < 1) ) {
+        console.error("Invalid package name");
+        process.exit(1);
+      }
+
+      _mod_name = props.name;
+    }
+
+    return _mod_name;
+  };
+
+  var getModuleDir = function() {
+    return path.join( process.cwd(), 'deploy', getModuleName() );
+  };
   
   gulp.task('bump', function() {
     return gulp.src(['package.json'])
@@ -58,11 +78,15 @@ exports.addTasks = function(gulp) {
     var json = getPackageProperties();
   
     // Get the build time and other stuff
+    props.Author     = json.author;
     props.BuildTime  = getBuildTimestamp();
     props.BuildOS    = os.type();
     props.BuildUser  = process.env.USER;
-    props.BuildPath  = path.join( process.cwd(), 'deploy', 'mobile.module' );
-    props.SourcePath = path.join( process.cwd(), 'deploy' );
+    props.BuildPath  = path.join( getModuleDir(), 'mobile.module' );
+    props.Label      = json.description;
+    props.License    = props.license;
+    props.Name       = getModuleName();
+    props.SourcePath = getModuleDir();
     props.Version    = json.version;
     props.Revision   = 'Not built from a Subversion source tree';
   
@@ -72,17 +96,16 @@ exports.addTasks = function(gulp) {
     });
   
     // Rename the file and write it out
-    stream.pipe(rename('module.xml')).pipe(gulp.dest('./deploy/config'));
+    stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config'));
   });
   
   gulp.task('copy_files', ['init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ])
-      .pipe(gulp.dest('./deploy'));
+      .pipe(gulp.dest( getModuleDir() ));
   
     var content = gulp.src([ path.join( process.cwd(), 'content/**') ])
-      .pipe(gulp.dest( path.join('./deploy/resources/web/mobile/content') ));
+      .pipe(gulp.dest( path.join(getModuleDir(), 'resources/web/mobile/content') ));
   });
   
   gulp.task('build_mobile', ['make_module.xml', 'copy_files']);
-  
 };
