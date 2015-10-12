@@ -9,7 +9,9 @@ var bump     = require('gulp-bump'),
     path     = require('path'),
     gutil    = require('gulp-util'),
     fs       = require('fs');
-  
+
+var licenseUtil = require('./license-util.js');
+
 exports.addTasks = function(gulp) {
   var cleanFiles = function() {
     del(['deploy']);
@@ -99,7 +101,8 @@ exports.addTasks = function(gulp) {
     props.BuildUser  = process.env.USER;
     props.BuildPath  = path.join( getModuleDir(), 'mobile.module' );
     props.Label      = json.description;
-    props.License    = props.license;
+    props.License    = json.license;
+    props.LicenseURL = licenseUtil.getLicenseURL(json.license);
     props.Name       = getModuleName();
     props.SourcePath = getModuleDir();
     props.Version    = json.version;
