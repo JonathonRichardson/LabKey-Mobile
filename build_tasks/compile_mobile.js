@@ -22,6 +22,11 @@ exports.addTasks = function(gulp) {
     return monthNames[time.getMonth()] + ' ' + time.getDate() + ' ' + time.getFullYear() + ', '
       + (time.getHours() % 12) + ':' + time.getMinutes() + ' ' + ampm;
   };
+
+  var getPackageProperties = function() {
+    var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    return json;
+  };
   
   gulp.task('bump', function() {
     return gulp.src(['package.json'])
@@ -50,7 +55,7 @@ exports.addTasks = function(gulp) {
     // Generate an EnlistmentId
     props.EnlistmentId = uuid.v4();
   
-    var json = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    var json = getPackageProperties();
   
     // Get the build time and other stuff
     props.BuildTime  = getBuildTimestamp();
