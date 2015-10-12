@@ -48,4 +48,21 @@ public class mobileController extends SpringActionController
             return root;
         }
     }
+
+    @ActionNames("LABKEYJavascriptAPI")
+    @RequiresLogin
+    public class MinAction<FORM> extends SimpleViewAction<FORM> {
+        @Override
+        public NavTree appendNavTrail(NavTree root) {
+            return root;
+        }
+
+        public ModelAndView getView(FORM form, BindException errors) throws Exception
+        {
+            JspView view = new JspView("/org/labkey/mobile/minTemplate.jsp");
+            view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
+            view.setFrame(WebPartView.FrameType.NONE);
+            return view;
+        }
+    }
 }
