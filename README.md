@@ -31,6 +31,9 @@ require('labkey-mobile').addTasks(gulp);
 gulp.task('default', ['build_mobile']);
 ```
 
+# Configure .gitignore
+Create a `.gitignore` if one does not exist and add the `deploy` directory to it (it may not exist yet).
+
 # Add a module.properties.json file
 You need to create a `module.properties.json` configuration file at the root.  This should contain json with the following fields:
 
