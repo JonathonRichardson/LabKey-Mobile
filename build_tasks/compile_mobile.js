@@ -95,18 +95,19 @@ exports.addTasks = function(gulp) {
     var json = getPackageProperties();
   
     // Get the build time and other stuff
-    props.Author     = json.author;
-    props.BuildTime  = getBuildTimestamp();
-    props.BuildOS    = os.type();
-    props.BuildUser  = process.env.USER;
-    props.BuildPath  = path.join( getModuleDir(), 'mobile.module' );
-    props.Label      = json.description;
-    props.License    = json.license;
-    props.LicenseURL = licenseUtil.getLicenseURL(json.license);
-    props.Name       = getModuleName();
-    props.SourcePath = getModuleDir();
-    props.Version    = json.version;
-    props.Revision   = 'Not built from a Subversion source tree';
+    props.Author      = json.author;
+    props.BuildTime   = getBuildTimestamp();
+    props.BuildOS     = os.type();
+    props.BuildUser   = process.env.USER;
+    props.BuildPath   = path.join( getModuleDir(), 'mobile.module' );
+    props.Label       = json.description;
+    props.License     = json.license;
+    props.LicenseURL  = licenseUtil.getLicenseURL(json.license);
+    props.ModuleClass = "org.labkey.mobile.mobileModule";
+    props.Name        = getModuleName();
+    props.SourcePath  = getModuleDir();
+    props.Version     = json.version;
+    props.Revision    = 'Not built from a Subversion source tree';
   
     // Replace all of the keys in the configuration
     _.each(props, function(value, key) {
