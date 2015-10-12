@@ -1,6 +1,6 @@
 {
   "name": "labkey-mobile",
-  "version": "0.1.0",
+  "version": "0.1.11",
   "description": "Generates mobile module for use with Labkey",
   "main": "index.js",
   "scripts": {
@@ -16,8 +16,15 @@
     "url": "https://github.com/JonathonRichardson/LabKey-Mobile/issues"
   },
   "homepage": "https://github.com/JonathonRichardson/LabKey-Mobile#readme",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "del": "^2.0.2",
-    "node-uuid": "^1.4.3"
+    "gulp": "^3.9.0",
+    "gulp-bump": "^1.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "jsonfile": "^2.2.2",
+    "node-uuid": "^1.4.3",
+    "underscore": "^1.8.3"
   }
 }
