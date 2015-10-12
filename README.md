@@ -42,7 +42,7 @@ You need to create a `module.properties.json` configuration file at the root.  T
 |Maintainer           |No      |Maintainer for the module (if not the author).         |
 |Organization         |No      |Name of the maintainer's organization.                 |
 |OrganizationURL      |No      |URL for a website for the maintainer's organization.   |
-|RequiredServerVersion|Yes     |Minimum required version of LabKey for the module.     |
+|RequiredServerVersion|No      |Minimum required version of LabKey for the module.     |
 |ModuleDependencies   |No      |Any modules that are required for this module to work. |
 
 # Write Your Content
