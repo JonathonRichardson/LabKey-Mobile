@@ -127,12 +127,17 @@ exports.addTasks = function(gulp) {
   });
 
   var checkLABKEYROOT = function(no_die) {
+    var safe_dir;
     if (no_die) {
-      var die = function() {
+      safe_die = function() {
         var args = Array.prototype.slice.call(arguments);
         throw args.join("");
       }
     }
+    else {
+      safe_die = die;
+    }
+
     if ('LABKEY_ROOT' in process.env) {
       try {
         var stats = fs.lstatSync(process.env.LABKEY_ROOT);
@@ -141,11 +146,11 @@ exports.addTasks = function(gulp) {
         }
       }
       catch (error) {
-        die("An error occurred while trying to deploy: ", error);
+        safe_die("An error occurred while trying to deploy: ", error);
       }
     }
     else {
-      die("You need to define LABKEY_ROOT before using gulp to deploy your mobile module.");
+      safe_die("You need to define LABKEY_ROOT before using gulp to deploy your mobile module.");
     }
  
     return path.join( process.env.LABKEY_ROOT, 'server', 'optionalModules' );
