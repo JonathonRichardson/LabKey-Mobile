@@ -57,7 +57,7 @@ exports.addTasks = function(gulp) {
         die("Invalid or missing package name.");
       }
 
-      _mod_name = props.name;
+      _mod_name = props.name.replace(/-/g,"_");
     }
 
     return _mod_name;
@@ -118,12 +118,14 @@ exports.addTasks = function(gulp) {
     stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config') ));
   });
   
-  gulp.task('LKM - Copy Files', ['LKM - Init'], function() {
+  gulp.task('LKM - Copy Core Files', ['LKM - Init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ])
       .pipe(gulp.dest( getModuleDir() ));
+  });
   
-    var content = gulp.src([ path.join( process.cwd(), 'content/**') ])
-      .pipe(gulp.dest( path.join(getModuleDir(), 'resources/web/mobile/content') ));
+  gulp.task('LKM - Copy Content Files', ['LKM - Copy Core Files'], function() {
+    var content = gulp.src([ path.join( process.cwd(), 'content/**') ]);
+    return content.pipe(gulp.dest( path.join(getModuleDir(), 'resources/web/mobile/content') ));
   });
 
   var checkLABKEYROOT = function(no_die) {
@@ -164,7 +166,10 @@ exports.addTasks = function(gulp) {
     del.sync([ deployedModulePath ], {force: true});
   };
 
-  gulp.task('LKM - Clean-Deployed', cleanDeployedtask);
+  gulp.task('LKM - Clean-Deployed', function(cb) {
+    cleanDeployedtask();
+    cb();
+  });
 
   var deployTask = function() {
     var optionalModulesPath = checkLABKEYROOT();
@@ -176,7 +181,7 @@ exports.addTasks = function(gulp) {
 
   gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
   
-  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Files'], function() {
+  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Content Files'], function() {
     try {
       checkLABKEYROOT(true);
 
@@ -184,7 +189,7 @@ exports.addTasks = function(gulp) {
       deployTask();
     }
     catch(error) {
-      gutil.log(gutil.colors.yellow("LABKEY_ROOT is not properly defined, so we will not attempt to deploy module."));
+      gutil.log(gutil.colors.yellow("LABKEY_ROOT is not properly defined, so we will not attempt to deploy module." + error));
     }
   });
 };
