@@ -88,14 +88,13 @@ exports.addTasks = function(gulp) {
       .pipe(gulp.dest( getModuleDir() ));
   });
   
-  gulp.task('LKM - Compile module.xml', ['LKM - Init', 'LKM - Copy Core Files'], function(cb) {
+  gulp.task('LKM - Compile module.properties', ['LKM - Init', 'LKM - Copy Core Files'], function(cb) {
     try {
       var props = jsonfile.readFileSync( path.join(process.cwd(),'module.properties.json') );
     }
     catch (error) {
       die("You must include a file named 'module.properties.json' in the root of the module.  Received the following error: ", error);
     }
-    var stream = gulp.src([ path.join(__dirname,'../template_files/module.template.xml') ])
      
     // Generate an EnlistmentId
     props.EnlistmentId = uuid.v4();
@@ -205,7 +204,7 @@ exports.addTasks = function(gulp) {
 
   gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
   
-  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Content Files', 'LKM - Compile module.iml'], function() {
+  gulp.task('build_mobile', ['LKM - Compile module.properties', 'LKM - Copy Content Files', 'LKM - Compile module.iml'], function() {
     try {
       checkLABKEYROOT(true);
 
