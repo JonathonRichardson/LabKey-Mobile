@@ -18,10 +18,14 @@ package org.labkey.labkey_mobile;
 
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.security.ActionNames;
 import org.labkey.api.security.RequiresPermission;
+import org.labkey.api.security.RequiresLogin;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
+import org.labkey.api.view.WebPartView;
+import org.labkey.api.view.template.ClientDependency;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -48,4 +52,21 @@ public class labkey_mobileController extends SpringActionController
             return root;
         }
     }
+
+    @ActionNames("LABKEYJavascriptAPI")
+    @RequiresLogin
+    public class MinAction<FORM> extends SimpleViewAction<FORM> {
+        @Override
+        public NavTree appendNavTrail(NavTree root) {
+            return root;
+        }   
+
+        public ModelAndView getView(FORM form, BindException errors) throws Exception
+        {   
+            JspView view = new JspView("/org/labkey/mobile/minTemplate.jsp");
+            view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
+            view.setFrame(WebPartView.FrameType.NONE);
+            return view;
+        }   
+    }  
 }

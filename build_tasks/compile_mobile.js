@@ -101,6 +101,17 @@ exports.addTasks = function(gulp) {
     props.EnlistmentId = uuid.v4();
   
     var json = getPackageProperties();
+
+    var version = (function() {
+      var pad = function(n, width, z) {
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+      }
+
+      var parts = json.version.split('.');
+      return parts[0] + '.' + pad(parts[1],3) + pad(parts[2],5);
+    })();
   
     // Get the build time and other stuff
     props.Author      = json.author;
@@ -111,10 +122,10 @@ exports.addTasks = function(gulp) {
     props.Label       = json.description;
     props.License     = json.license;
     props.LicenseURL  = licenseUtil.getLicenseURL(json.license);
-    props.ModuleClass = "org.labkey.mobile.mobileModule";
+    props.ModuleClass = "org.labkey." + getModuleName() + "." + getModuleName() + "Module";
     props.Name        = getModuleName();
     props.SourcePath  = getModuleDir();
-    props.Version     = json.version;
+    props.Version     = version;
     props.Revision    = 'Not built from a Subversion source tree';
   
     // Replace all of the keys in the configuration
