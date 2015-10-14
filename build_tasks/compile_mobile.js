@@ -1,4 +1,5 @@
 var bump     = require('gulp-bump'),
+    debug    = require('gulp-debug'),
     uuid     = require('node-uuid'),
     rename   = require('gulp-rename'),
     replace  = require('gulp-replace'),
@@ -80,7 +81,7 @@ exports.addTasks = function(gulp) {
   
   gulp.task('LKM - Init', ['LKM - Clean', 'LKM - Bump Build Version']);
   
-  gulp.task('LKM - Compile module.xml', ['LKM - Init'], function() {
+  gulp.task('LKM - Compile module.xml', ['LKM - Init', 'LKM - Copy Core Files'], function(cb) {
     try {
       var props = jsonfile.readFileSync( path.join(process.cwd(),'module.properties.json') );
     }
@@ -110,17 +111,22 @@ exports.addTasks = function(gulp) {
     props.Revision    = 'Not built from a Subversion source tree';
   
     // Replace all of the keys in the configuration
+    var fileText = "";
     _.each(props, function(value, key) {
-      stream = stream.pipe(replace('@@' + key + '@@', props[key]));
+      fileText += key + "=" + value + '\n';
     });
   
     // Rename the file and write it out
-    stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config') ));
+    var propFile = path.join(getModuleDir(), 'module.properties');
+    gutil.log("Writing " + propFile);
+    fs.writeFile( propFile, fileText, function() {
+      cb();
+    });
   });
   
   gulp.task('LKM - Copy Core Files', ['LKM - Init'], function() {
-    var core = gulp.src([ path.join(__dirname,'../module_files/**') ])
-      .pipe(gulp.dest( getModuleDir() ));
+    var core = gulp.src([ path.join(__dirname,'../module_files/**') ]);
+    return core.pipe(gulp.dest( getModuleDir() ));
   });
   
   gulp.task('LKM - Copy Content Files', ['LKM - Copy Core Files'], function() {
