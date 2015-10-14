@@ -80,6 +80,13 @@ exports.addTasks = function(gulp) {
   });
   
   gulp.task('LKM - Init', ['LKM - Clean', 'LKM - Bump Build Version']);
+
+  gulp.task('LKM - Compile module.iml', ['LKM - Copy Core Files'], function() {
+    var stream = gulp.src([ path.join( __dirname, '../template_files/module.iml' ) ]);
+    return stream.pipe(replace('{{ModuleName}}', getModuleName()))
+      .pipe(rename( getModuleName() + ".iml" ))
+      .pipe(gulp.dest( getModuleDir() ));
+  });
   
   gulp.task('LKM - Compile module.xml', ['LKM - Init', 'LKM - Copy Core Files'], function(cb) {
     try {
@@ -187,7 +194,7 @@ exports.addTasks = function(gulp) {
 
   gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
   
-  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Content Files'], function() {
+  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Content Files', 'LKM - Compile module.iml'], function() {
     try {
       checkLABKEYROOT(true);
 
