@@ -1,4 +1,3 @@
-<%
 /*
  * Copyright (c) 2015 LabKey Corporation
  *
@@ -14,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-%>
-<%@ page import="org.labkey.api.data.Container" %>
-<%@ page import="org.labkey.api.security.User" %>
-<%@ page extends="org.labkey.api.jsp.JspBase" %>
-<%
-    Container c = getContainer();
-    User user = getUser();
-%>
-Hello, and welcome to the mobile module.
+
+package org.labkey.labkey_mobile;
+
+public class labkey_mobileManager
+{
+    private static final labkey_mobileManager _instance = new labkey_mobileManager();
+
+    private labkey_mobileManager()
+    {
+        // prevent external construction with a private default constructor
+    }
+
+    public static labkey_mobileManager get()
+    {
+        return _instance;
+    }
+}

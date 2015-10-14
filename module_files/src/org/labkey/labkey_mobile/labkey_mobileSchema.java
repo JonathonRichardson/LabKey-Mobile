@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.labkey.mobile;
+package org.labkey.labkey_mobile;
 
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.dialect.SqlDialect;
 
-public class mobileSchema
+public class labkey_mobileSchema
 {
-    private static final mobileSchema _instance = new mobileSchema();
-    public static final String NAME = "mobile";
+    private static final labkey_mobileSchema _instance = new labkey_mobileSchema();
+    public static final String NAME = "labkey_mobile";
 
-    public static mobileSchema getInstance()
+    public static labkey_mobileSchema getInstance()
     {
         return _instance;
     }
 
-    private mobileSchema()
+    private labkey_mobileSchema()
     {
         // private constructor to prevent instantiation from
         // outside this class: this singleton should only be
-        // accessed via org.labkey.mobile.mobileSchema.getInstance()
+        // accessed via org.labkey.labkey_mobile.labkey_mobileSchema.getInstance()
     }
 
     public DbSchema getSchema()

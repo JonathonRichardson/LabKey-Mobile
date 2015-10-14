@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.labkey.mobile;
+package org.labkey.labkey_mobile;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import java.beans.PropertyChangeEvent;
 
-public class mobileContainerListener implements ContainerListener
+public class labkey_mobileContainerListener implements ContainerListener
 {
     @Override
     public void containerCreated(Container c, User user)

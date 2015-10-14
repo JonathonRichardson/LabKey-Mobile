@@ -1,5 +1,0 @@
-<libraries xmlns="http://labkey.org/clientLibrary/xml/">
-    <library>
-        <script path="/wnprc_ehr/mobile/lib/jquery-1.11.3.min.js"/>
-    </library>
-</libraries>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.labkey.mobile;
+package org.labkey.labkey_mobile;
 
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class mobileModule extends DefaultModule
+public class labkey_mobileModule extends DefaultModule
 {
-    public static final String NAME = "mobile";
+    public static final String NAME = "labkey_mobile";
 
     @Override
     public String getName()
@@ -59,14 +59,14 @@ public class mobileModule extends DefaultModule
     @Override
     protected void init()
     {
-        addController(mobileController.NAME, mobileController.class);
+        addController(labkey_mobileController.NAME, labkey_mobileController.class);
     }
 
     @Override
     public void doStartup(ModuleContext moduleContext)
     {
         // add a container listener so we'll know when our container is deleted:
-        ContainerManager.addContainerListener(new mobileContainerListener());
+        ContainerManager.addContainerListener(new labkey_mobileContainerListener());
     }
 
     @Override
@@ -80,6 +80,6 @@ public class mobileModule extends DefaultModule
     @NotNull
     public Set<String> getSchemaNames()
     {
-        return Collections.singleton(mobileSchema.NAME);
+        return Collections.singleton(labkey_mobileSchema.NAME);
     }
 }

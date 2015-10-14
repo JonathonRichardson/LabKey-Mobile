@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.labkey.mobile;
+package org.labkey.labkey_mobile;
 
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
@@ -25,12 +25,12 @@ import org.labkey.api.view.NavTree;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-public class mobileController extends SpringActionController
+public class labkey_mobileController extends SpringActionController
 {
-    private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(mobileController.class);
-    public static final String NAME = "mobile";
+    private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(labkey_mobileController.class);
+    public static final String NAME = "labkey_mobile";
 
-    public mobileController()
+    public labkey_mobileController()
     {
         setActionResolver(_actionResolver);
     }
@@ -40,29 +40,12 @@ public class mobileController extends SpringActionController
     {
         public ModelAndView getView(Object o, BindException errors) throws Exception
         {
-            return new JspView("/org/labkey/mobile/view/hello.jsp");
+            return new JspView("/org/labkey/labkey_mobile/view/hello.jsp");
         }
 
         public NavTree appendNavTrail(NavTree root)
         {
             return root;
-        }
-    }
-
-    @ActionNames("LABKEYJavascriptAPI")
-    @RequiresLogin
-    public class MinAction<FORM> extends SimpleViewAction<FORM> {
-        @Override
-        public NavTree appendNavTrail(NavTree root) {
-            return root;
-        }
-
-        public ModelAndView getView(FORM form, BindException errors) throws Exception
-        {
-            JspView view = new JspView("/org/labkey/mobile/minTemplate.jsp");
-            view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
-            view.setFrame(WebPartView.FrameType.NONE);
-            return view;
         }
     }
 }
