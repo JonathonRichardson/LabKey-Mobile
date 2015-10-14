@@ -14,7 +14,7 @@ var licenseUtil = require('./license-util.js');
 
 exports.addTasks = function(gulp) {
   var cleanFiles = function() {
-    del(['deploy']);
+    del.sync(['deploy']);
   };
 
   var die = function() {
@@ -67,20 +67,20 @@ exports.addTasks = function(gulp) {
     return path.join( process.cwd(), 'deploy', getModuleName() );
   };
   
-  gulp.task('bump', function() {
+  gulp.task('LKM - Bump Build Version', function() {
     return gulp.src(['package.json'])
       .pipe(bump())
       .pipe(gulp.dest('./'));
   });
   
-  gulp.task('clean', function(cb) {
+  gulp.task('LKM - Clean', function(cb) {
     cleanFiles();
     cb();
   });
   
-  gulp.task('init', ['clean', 'bump']);
+  gulp.task('LKM - Init', ['LKM - Clean', 'LKM - Bump Build Version']);
   
-  gulp.task('make_module.xml', ['init'], function() {
+  gulp.task('LKM - Compile module.xml', ['LKM - Init'], function() {
     try {
       var props = jsonfile.readFileSync( path.join(process.cwd(),'module.properties.json') );
     }
@@ -118,13 +118,68 @@ exports.addTasks = function(gulp) {
     stream.pipe(rename('module.xml')).pipe(gulp.dest( path.join(getModuleDir(),'config') ));
   });
   
-  gulp.task('copy_files', ['init'], function() {
+  gulp.task('LKM - Copy Files', ['LKM - Init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ])
       .pipe(gulp.dest( getModuleDir() ));
   
     var content = gulp.src([ path.join( process.cwd(), 'content/**') ])
       .pipe(gulp.dest( path.join(getModuleDir(), 'resources/web/mobile/content') ));
   });
+
+  var checkLABKEYROOT = function(no_die) {
+    if (no_die) {
+      var die = function() {
+        var args = Array.prototype.slice.call(arguments);
+        throw args.join("");
+      }
+    }
+    if ('LABKEY_ROOT' in process.env) {
+      try {
+        var stats = fs.lstatSync(process.env.LABKEY_ROOT);
+        if ( !stats.isDirectory() ) {
+          throw "LABKEY_ROOT needs to be a directory path.";
+        }
+      }
+      catch (error) {
+        die("An error occurred while trying to deploy: ", error);
+      }
+    }
+    else {
+      die("You need to define LABKEY_ROOT before using gulp to deploy your mobile module.");
+    }
+ 
+    return path.join( process.env.LABKEY_ROOT, 'server', 'optionalModules' );
+  };
+
+  var cleanDeployedtask = function() {
+    var optionalModulesPath = checkLABKEYROOT();
+    var deployedModulePath  = path.join( optionalModulesPath, getModuleName() );
+
+    gutil.log("Clearing out " + deployedModulePath);
+    del.sync([ deployedModulePath ], {force: true});
+  };
+
+  gulp.task('LKM - Clean-Deployed', cleanDeployedtask);
+
+  var deployTask = function() {
+    var optionalModulesPath = checkLABKEYROOT();
+    var deployedModulePath  = path.join( optionalModulesPath, getModuleName() );
+
+    gutil.log("Copying " + getModuleDir() + " to " + deployedModulePath);
+    gulp.src( path.join(getModuleDir(),'**') ).pipe(gulp.dest( deployedModulePath ));
+  };
+
+  gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
   
-  gulp.task('build_mobile', ['make_module.xml', 'copy_files']);
+  gulp.task('build_mobile', ['LKM - Compile module.xml', 'LKM - Copy Files'], function() {
+    try {
+      checkLABKEYROOT(true);
+
+      cleanDeployedtask();
+      deployTask();
+    }
+    catch(error) {
+      gutil.log(gutil.colors.yellow("LABKEY_ROOT is not properly defined, so we will not attempt to deploy module."));
+    }
+  });
 };
