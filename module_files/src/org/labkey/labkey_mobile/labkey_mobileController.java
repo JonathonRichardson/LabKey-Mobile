@@ -24,10 +24,13 @@ import org.labkey.api.security.RequiresLogin;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
+import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.labkey.api.view.template.PageConfig;
 
 public class labkey_mobileController extends SpringActionController
 {
@@ -63,10 +66,21 @@ public class labkey_mobileController extends SpringActionController
 
         public ModelAndView getView(FORM form, BindException errors) throws Exception
         {   
-            JspView view = new JspView("/org/labkey/mobile/minTemplate.jsp");
+            JspView view = new JspView("/org/labkey/labkey_mobile/minTemplate.jsp");
             view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
             view.setFrame(WebPartView.FrameType.NONE);
             return view;
         }   
     }  
+
+    /*
+     * Override the template function here so we can choose any template that we want.
+     */
+    @Override
+    protected ModelAndView getTemplate(ViewContext context, ModelAndView mv, Controller action, PageConfig page) {
+        JspView<PageConfig> template = new JspView<PageConfig>("/org/labkey/wnprc_ehr/minTemplate.jsp", page);
+        template.setBody(mv);
+        template.setFrame(WebPartView.FrameType.NONE);
+        return template;
+    }
 }

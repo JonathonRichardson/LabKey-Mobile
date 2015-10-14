@@ -4,7 +4,7 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
             LoginFailureData: {}
         },
         Config: {
-            BaseURL: function() { return "/" } //TODO: Make this function more robust, for PhoneGap
+            BaseURL: function() { return "" } //TODO: Make this function more robust, for PhoneGap
         },
         Authentication: {
             LoginFailureData: {}
@@ -61,7 +61,12 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
                 };
             },
             getURL: function() {
-                return EHRMobile.Config.BaseURL() + this.relativePath;
+                if ( this.relativePath.substr(0,1) === '/' ) { 
+                  return EHRMobile.Config.BaseURL() + this.relativePath;
+                }
+                else {
+                  return this.relativePath;
+                }
             },
             getAJAXConfig: function() {
                 var config = this.ajaxConfig;
@@ -122,7 +127,7 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
         // This is an Ajax call that will check to see if we are logged in, and, if not, attempt to log us in.
         var checkLoginRequest = new EHRAjaxRequest({
             //relativePath: "security/ensureLogin.view",
-            relativePath: "project/home/begin.view",
+            relativePath: "/project/home/begin.view",
             dontIgnoreAuthenticationFailure: true,
             handler: function(successful, data) {
                 if (successful) {
@@ -138,7 +143,7 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
     };
 
     EHRMobile.Utils.LoginBootstrap = function() {
-        EHRMobile.Utils.Get('ehr-mobile/LABKEYJavascriptAPI.view', function (success, data) {
+        EHRMobile.Utils.Get('LABKEYJavascriptAPI.view', function (success, data) {
             /*
              * We have to tell the LabKey JS API that the DOM is done loading, but before anything tries to use any LABKEY APIs,
              * so we'll insert a quick script after labkey.js is loaded.  Note that this needs to keep the wildcard in order
@@ -204,7 +209,7 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
         var actualLoginRequest = new EHRAjaxRequest({
             // Note that you have to form the URL manually, because LabKey expects the email to include '@', as
             // opposed to it's encoded version.
-            relativePath: "login/login.post" + "?email=" + username + "&password=" + password,
+            relativePath: "/login/login.post" + "?email=" + username + "&password=" + password,
             ajaxConfig:   {
                 method: 'POST',
                 headers: {'Content-Type': "x-www-form-urlencoded"},
@@ -246,7 +251,7 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
             location.reload();
         };
 
-        var URL = EHRMobile.Config.BaseURL() + "login/home/logout.view";
+        var URL = EHRMobile.Config.BaseURL() + "/login/home/logout.view";
 
         $.ajax(URL, {
             success: success,
