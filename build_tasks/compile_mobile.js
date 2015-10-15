@@ -263,10 +263,10 @@ exports.addTasks = function(gulp) {
 
     var child = spawn(antExecutable, ['-buildfile', buildXML, '-DmoduleDir=' + modulePath, 'build_module']);
     child.stdout.on('data', function(data) {
-      console.log("STDOUT: " + data);
+      console.log("" + data);
     });
     child.stderr.on('data', function(data) {
-      console.log("STDERR: " + data);
+      gutil.log(gutil.colors.red("" + data));
     });
     child.on('exit', function() {
       cb();
