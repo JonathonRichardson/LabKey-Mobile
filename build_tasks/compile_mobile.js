@@ -49,6 +49,17 @@ exports.addTasks = function(gulp) {
     return json;
   };
 
+  var getVersion = function() {
+    var pad = function(n, width, z) {
+      z = z || '0';
+      n = n + '';
+      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    }
+
+    var parts = getPackageProperties().version.split('.');
+    return parts[0] + '.' + pad(parts[1],3) + pad(parts[2],5);
+  };
+
   var _mod_name = null;
   var getModuleName = function() {
     if ( _mod_name === null ) {
@@ -101,17 +112,6 @@ exports.addTasks = function(gulp) {
   
     var json = getPackageProperties();
 
-    var version = (function() {
-      var pad = function(n, width, z) {
-        z = z || '0';
-        n = n + '';
-        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-      }
-
-      var parts = json.version.split('.');
-      return parts[0] + '.' + pad(parts[1],3) + pad(parts[2],5);
-    })();
-  
     // Get the build time and other stuff
     props.Author      = json.author;
     props.BuildTime   = getBuildTimestamp();
@@ -124,7 +124,7 @@ exports.addTasks = function(gulp) {
     props.ModuleClass = "org.labkey." + getModuleName() + "." + getModuleName() + "Module";
     props.Name        = getModuleName();
     props.SourcePath  = getModuleDir();
-    props.Version     = version;
+    props.Version     = getVersion();
     props.Revision    = 'Not built from a Subversion source tree';
   
     // Replace all of the keys in the configuration
@@ -144,13 +144,20 @@ exports.addTasks = function(gulp) {
   gulp.task('LKM - Copy Core Files', ['LKM - Init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ]);
  
+    // Replace the default module name with our package name.
     core = core.pipe(replace('labkey_mobile', getModuleName()));
-   
     core = core.pipe(rename(function(path) {
       _.each(path, function(pieceValue, pieceName) {
         path[pieceName] = pieceValue.replace('labkey_mobile', getModuleName() );
       });
     }));
+
+    var keywords = {
+      Version: getVersion()
+    };
+    _.each(keywords, function(value, keyword) {
+      core = core.pipe(replace('{@{' + keyword + '}@}', value));
+    });
 
     return core.pipe(gulp.dest( getModuleDir() ));
   });

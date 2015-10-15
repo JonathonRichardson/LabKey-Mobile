@@ -40,7 +40,7 @@ public class labkey_mobileModule extends DefaultModule
     @Override
     public double getVersion()
     {
-        return 15.11;
+        return {@{Version}@};
     }
 
     @Override
