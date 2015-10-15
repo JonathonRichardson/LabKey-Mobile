@@ -169,6 +169,11 @@ exports.addTasks = function(gulp) {
     return content.pipe(gulp.dest( contentDir ));
   });
 
+  gulp.task('LKM - Copy Stylesheets', ['LKM - Copy Core Files'], function() {
+    var css    = gulp.src([ path.join( process.cwd(), 'stylesheets', '**', '*.css') ]);
+    var cssDir = path.join(getModuleDir(), 'resources', 'web', getModuleName(), 'css');
+    return css.pipe(gulp.dest( cssDir ));
+  });
 
   var checkLABKEYROOT = function(no_die) {
     var safe_dir;
@@ -223,7 +228,7 @@ exports.addTasks = function(gulp) {
 
   gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
   
-  gulp.task('build_mobile', ['LKM - Compile module.properties', 'LKM - Copy Content Files', 'LKM - Compile module.iml'], function() {
+  gulp.task('build_mobile', ['LKM - Copy Stylesheets', 'LKM - Compile module.properties', 'LKM - Copy Content Files', 'LKM - Compile module.iml'], function() {
     try {
       checkLABKEYROOT(true);
 
