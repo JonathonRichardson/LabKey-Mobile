@@ -154,5 +154,33 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
         valueAccessor: 'meaning'
     });
 
+    Lookups.addTable({
+        name:          'feces-observations',
+        queryName:     'obs_feces',
+        keyAccessor:   'value',
+        valueAccessor: 'title'
+    });
+
+    Lookups.addTable({
+        name:          'menstruation-observations',
+        queryName:     'obs_mens',
+        keyAccessor:   'value',
+        valueAccessor: 'title'
+    });
+
+    Lookups.addTable({
+        name:          'other-observations',
+        queryName:     'obs_other',
+        keyAccessor:   'value',
+        valueAccessor: 'title'
+    });
+
+    Lookups.addTable({
+        name:          'trauma-location-observations',
+        queryName:     'obs_tlocation',
+        keyAccessor:   'value',
+        valueAccessor: 'value'
+    });
+
     return Lookups;
 });
