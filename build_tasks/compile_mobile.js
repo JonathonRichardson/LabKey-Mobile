@@ -242,6 +242,7 @@ exports.addTasks = function(gulp) {
                              'LKM - Copy Stylesheets', 
                              'LKM - Compile module.properties', 
                              'LKM - Copy Content Files', 
+                             'LKM - Install Bower Components', 
                              'LKM - Compile module.iml'], function() {
     try {
       checkLABKEYROOT(true);
@@ -254,14 +255,8 @@ exports.addTasks = function(gulp) {
     }
   });
 
-  gulp.task('LKM - Build', ['LKM - Deploy'], function(cb) {
-    var optionalModulesPath = checkLABKEYROOT();
-    var labkeyRoot          = path.join(optionalModulesPath, '..', '..');
-    var antExecutable       = path.join(labkeyRoot, 'external', 'ant', 'bin', 'ant');
-    var buildXML            = path.join(labkeyRoot, 'server', 'build.xml');
-    var modulePath          = path.join(optionalModulesPath, getModuleName());
-
-    var child = spawn(antExecutable, ['-buildfile', buildXML, '-DmoduleDir=' + modulePath, 'build_module']);
+  var executeShell = function( command, options, cb) {
+    var child = spawn(command, options);
     child.stdout.on('data', function(data) {
       console.log("" + data);
     });
@@ -271,5 +266,25 @@ exports.addTasks = function(gulp) {
     child.on('exit', function() {
       cb();
     });
+    return child;
+  };
+
+  gulp.task('LKM - Build', ['LKM - Deploy'], function(cb) {
+    var optionalModulesPath = checkLABKEYROOT();
+    var labkeyRoot          = path.join(optionalModulesPath, '..', '..');
+    var antExecutable       = path.join(labkeyRoot, 'external', 'ant', 'bin', 'ant');
+    var buildXML            = path.join(labkeyRoot, 'server', 'build.xml');
+    var modulePath          = path.join(optionalModulesPath, getModuleName());
+
+    var child = executeShell(antExecutable, ['-buildfile', buildXML, '-DmoduleDir=' + modulePath, 'build_module'], cb);
+  });
+
+  gulp.task('LKM - Bower Bootstrap', function(cb) {
+    var child = executeShell('bower', ['install'], cb);
+  });
+
+  gulp.task('LKM - Install Bower Components', ['LKM - Bower Bootstrap'], function(cb) {
+    // TODO: Implement this using the Bower API.
+    cb();
   });
 };
