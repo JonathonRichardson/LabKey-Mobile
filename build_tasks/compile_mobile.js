@@ -9,6 +9,7 @@ var bump     = require('gulp-bump'),
     os       = require('os'),
     path     = require('path'),
     gutil    = require('gulp-util'),
+    spawn    = require('child_process').spawn;
     fs       = require('fs');
 
 var licenseUtil = require('./license-util.js');
@@ -232,7 +233,10 @@ exports.addTasks = function(gulp) {
     gulp.src( path.join(getModuleDir(),'**') ).pipe(gulp.dest( deployedModulePath ));
   };
 
-  gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], deployTask );
+  gulp.task('LKM - Deploy', ['LKM - Clean-Deployed'], function(cb) {
+    deployTask();
+    cb();
+  });
   
   gulp.task('build_mobile', ['LKM - Copy Components', 
                              'LKM - Copy Stylesheets', 
@@ -248,5 +252,24 @@ exports.addTasks = function(gulp) {
     catch(error) {
       gutil.log(gutil.colors.yellow("LABKEY_ROOT is not properly defined, so we will not attempt to deploy module." + error));
     }
+  });
+
+  gulp.task('LKM - Build', ['LKM - Deploy'], function(cb) {
+    var optionalModulesPath = checkLABKEYROOT();
+    var labkeyRoot          = path.join(optionalModulesPath, '..', '..');
+    var antExecutable       = path.join(labkeyRoot, 'external', 'ant', 'bin', 'ant');
+    var buildXML            = path.join(labkeyRoot, 'server', 'build.xml');
+    var modulePath          = path.join(optionalModulesPath, getModuleName());
+
+    var child = spawn(antExecutable, ['-buildfile', buildXML, '-DmoduleDir=' + modulePath, 'build_module']);
+    child.stdout.on('data', function(data) {
+      console.log("STDOUT: " + data);
+    });
+    child.stderr.on('data', function(data) {
+      console.log("STDERR: " + data);
+    });
+    child.on('exit', function() {
+      cb();
+    });
   });
 };
