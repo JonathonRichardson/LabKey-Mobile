@@ -117,7 +117,7 @@ exports.addTasks = function(gulp) {
     props.BuildTime   = getBuildTimestamp();
     props.BuildOS     = os.type();
     props.BuildUser   = process.env.USER;
-    props.BuildPath   = path.join( getModuleDir(), 'mobile.module' );
+    props.BuildPath   = path.join( getModuleDir(), getModuleDir() + '.module' );
     props.Label       = json.description;
     props.License     = json.license;
     props.LicenseURL  = licenseUtil.getLicenseURL(json.license);
@@ -147,8 +147,10 @@ exports.addTasks = function(gulp) {
   });
   
   gulp.task('LKM - Copy Content Files', ['LKM - Copy Core Files'], function() {
-    var content = gulp.src([ path.join( process.cwd(), 'content/**') ]);
-    return content.pipe(gulp.dest( path.join(getModuleDir(), 'resources/web/mobile/content') ));
+    var content    = gulp.src([ path.join( process.cwd(), 'content', '**') ]);
+    var contentDir = path.join(getModuleDir(), 'resources/web/' + getModuleName() + '/content');
+    gutil.log( 'Writing content to: ' + contentDir );
+    return content.pipe(gulp.dest( contentDir ));
   });
 
   var checkLABKEYROOT = function(no_die) {
