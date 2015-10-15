@@ -1,5 +1,5 @@
 {
-  "name": "labkey-mobile2",
+  "name": "labkey-mobile",
   "version": "0.1.113",
   "description": "Generates mobile module for use with Labkey",
   "main": "index.js",
