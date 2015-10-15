@@ -143,6 +143,15 @@ exports.addTasks = function(gulp) {
   
   gulp.task('LKM - Copy Core Files', ['LKM - Init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ]);
+ 
+    core = core.pipe(replace('labkey_mobile', getModuleName()));
+   
+    core = core.pipe(rename(function(path) {
+      _.each(path, function(pieceValue, pieceName) {
+        path[pieceName] = pieceValue.replace('labkey_mobile', getModuleName() );
+      });
+    }));
+
     return core.pipe(gulp.dest( getModuleDir() ));
   });
   
@@ -152,6 +161,7 @@ exports.addTasks = function(gulp) {
     gutil.log( 'Writing content to: ' + contentDir );
     return content.pipe(gulp.dest( contentDir ));
   });
+
 
   var checkLABKEYROOT = function(no_die) {
     var safe_dir;
