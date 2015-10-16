@@ -175,7 +175,7 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
     });
 
     Lookups.addTable({
-        name:          'menstruation-observations',
+        name:          'menses-observations',
         queryName:     'obs_mens',
         keyAccessor:   'value',
         valueAccessor: 'title'
