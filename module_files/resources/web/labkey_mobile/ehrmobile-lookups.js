@@ -23,6 +23,7 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
             this.getValueFunction = getAccessorFunction(config.valueAccessor);
 
             this.data = {};
+            this.ko$values = ko.observableArray();
         },
         methods: {
             loadData: function() {
@@ -34,6 +35,10 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
                     success: function (data) {
                         _.each(data.rows, function (row, index, list) {
                             self.data[self.getKeyFunction(row)] = row;
+                            self.ko$values.push({
+                                key:   self.getKeyFunction(row),
+                                value: self.getValueFunction(row)
+                            });
                         });
 
                         self.ko$dataLoaded(true);
@@ -120,6 +125,14 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
                         }
                     }
                 }
+            },
+            valueHash: function() {
+                var hash = {};
+                jQuery.each(this.lookupTables(), function(i, table) {
+                    hash[table.name] = table;
+                });
+
+                return hash;
             }
         }
     });
@@ -180,6 +193,20 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
         queryName:     'obs_tlocation',
         keyAccessor:   'value',
         valueAccessor: 'value'
+    });
+
+    Lookups.addTable({
+        name:          'breeding-observations',
+        queryName:     'obs_breeding',
+        keyAccessor:   'value',
+        valueAccessor: 'title'
+    });
+
+    Lookups.addTable({
+        name:          'behavior-observations',
+        queryName:     'obs_behavior',
+        keyAccessor:   'value',
+        valueAccessor: 'title'
     });
 
     return Lookups;
