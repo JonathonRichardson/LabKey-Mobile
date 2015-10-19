@@ -13,14 +13,11 @@ define(["require","exports","module","jquery","underscore","knockout"],function(
             // Loop through the properties on the row to make observable versions of each column.
             jQuery.each(_.keys(row), function(index, propertyName) {
                 var value = row[propertyName];
-                if (value === null) {
-                    value = "";
-                }
 
                 // Filter out non-primative properties, as well as properties that start with an underscore
                 if ((!_.isArray(value) && (_.keys(value)).length === 0) && (!propertyName.toString().match(/^_/))) {
                     //TODO: Eventually, handle the loading of urn link values.
-                    if ( !value.toString().match(/^urn:/)) {
+                    if ( (value === null) || !value.toString().match(/^urn:/)) {
                         self[propertyName] = ko.observable(value);
                         self._columns[propertyName] = true;
                     }
@@ -52,9 +49,10 @@ define(["require","exports","module","jquery","underscore","knockout"],function(
                 var hasBeenModified = false;
                 jQuery.each(this._columns, function(key) {
                     if (self._originalData[key] !== self.getColumn(key)) {
-
+                        hasBeenModified = true;
                     }
-                })
+                });
+                return hasBeenModified;
             },
             columnHasBeenModified: function(column) {
                 if (self._originalData[column] !== self.getColumn(column)) {
@@ -93,7 +91,9 @@ define(["require","exports","module","jquery","underscore","knockout"],function(
             }
 
             jQuery.each(rows, function (index, value) {
-                rowsArray.push(new rowConstructor(value));
+                rowsArray.push(new rowConstructor({
+                    row: value
+                }));
             });
 
             this.rows = ko.observableArray(rowsArray);
@@ -119,7 +119,7 @@ define(["require","exports","module","jquery","underscore","knockout"],function(
     });
 
 
-    SuperSQLStore.Version = '0.0.5';
+    SuperSQLStore.Version = '0.0.6';
 
     return SuperSQLStore;
 
