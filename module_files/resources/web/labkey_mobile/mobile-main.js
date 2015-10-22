@@ -55,6 +55,11 @@ requirejs(["jquery"], function($) {
                 }
             });
 
+            ko.components.register('ehr-animalview', {
+                viewModel: { require: "components/ehr-animalview" },
+                template:  { require: "text!components/ehr-animalview.html"}
+            });
+
             requirejs(["core", "jquery", "knockout", "ehrmobile", "knockout.mapping", "xlabkey", "display"], function(core, $, ko, EHRMobile) {
                 $(document).ready(function () {
                     ko.applyBindings(PageViewModel);
