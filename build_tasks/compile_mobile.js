@@ -190,6 +190,22 @@ exports.addTasks = function(gulp) {
         return content.pipe(gulp.dest( contentDir ));
     });
 
+    gulp.task('LKM - Copy JS Files', ['LKM - Copy Core Files'], function() {
+        var js    = gulp.src([ path.join( process.cwd(), 'js', '**') ]);
+        var jsDir = path.join(getModuleDir(), 'resources/web/' + getModuleName() + '/js');
+        gutil.log( 'Writing content to: ' + jsDir );
+
+        var keywords = {
+            Version: getVersion(),
+            ModuleName: getModuleName()
+        };
+        _.each(keywords, function(value, keyword) {
+            js = js.pipe(replace('{@{' + keyword + '}@}', value));
+        });
+
+        return js.pipe(gulp.dest( jsDir ));
+    });
+
     gulp.task('LKM - Compile Content Manifest', ['LKM - Copy Content Files'], function(cb) {
         var contentDir = path.join(getModuleDir(), 'resources', 'web', getModuleName(), "content/");
         var files = glob.sync(contentDir + '/**', {mark: true});
@@ -366,6 +382,7 @@ exports.addTasks = function(gulp) {
                                'LKM - Compile module.properties',
                                'LKM - Copy Content Files',
                                'LKM - Generate Credits JSON',
+                               'LKM - Copy JS Files',
                                'LKM - Compile module.iml',
                                'LKM - Compile Content Manifest'], function() {
         try {
