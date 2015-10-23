@@ -129,7 +129,7 @@ define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping",
         var onSameTree;
         // Determine if we're going down the hierarchy
         if ($mainContainer.children().length === 0) {
-            firstPage === true;
+            firstPage = true;
         }
         else if ( (oldHierarchy.length > pageList.length) && _.isEqual(oldHierarchy.slice(0,pageList.length), pageList) ) {
             // We are going up
