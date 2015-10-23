@@ -3,6 +3,7 @@ var bump     = require('gulp-bump'),
     uuid     = require('node-uuid'),
     rename   = require('gulp-rename'),
     replace  = require('gulp-replace'),
+    filter   = require('gulp-filter'),
     jsonfile = require('jsonfile'),
     _        = require('underscore'),
     del      = require('del'),
@@ -145,13 +146,16 @@ exports.addTasks = function(gulp) {
   gulp.task('LKM - Copy Core Files', ['LKM - Init'], function() {
     var core = gulp.src([ path.join(__dirname,'../module_files/**') ]);
  
-    // Replace the default module name with our package name.
-    core = core.pipe(replace('labkey_mobile', getModuleName()));
+    // Replace the default module name with our package name in paths
     core = core.pipe(rename(function(path) {
       _.each(path, function(pieceValue, pieceName) {
         path[pieceName] = pieceValue.replace('labkey_mobile', getModuleName() );
       });
     }));
+
+    var staticContentFilter = filter(['**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
+    core = core.pipe(staticContentFilter).pipe(debug({title: 'filteredFiles'}));
+    core = core.pipe(replace('labkey_mobile', getModuleName()));
 
     var keywords = {
       Version: getVersion(),
@@ -160,6 +164,8 @@ exports.addTasks = function(gulp) {
     _.each(keywords, function(value, keyword) {
       core = core.pipe(replace('{@{' + keyword + '}@}', value));
     });
+
+    core = core.pipe(staticContentFilter.restore);
 
     return core.pipe(gulp.dest( getModuleDir() ));
   });
