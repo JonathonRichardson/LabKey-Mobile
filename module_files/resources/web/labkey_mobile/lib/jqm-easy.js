@@ -146,6 +146,17 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
                        }
                    });
                }
+               else {
+                   // If we didn't pass in a disabled function, get one that leaves the button always enabled.
+                   params.disabled = function() {
+                       return false;
+                   }
+               }
+
+               // Ensure we have a function.
+               if(!_.isFunction(params.click)) {
+                   params.click = function() {};
+               }
 
                var VM = {
                    innerHTML: innerHTML,
