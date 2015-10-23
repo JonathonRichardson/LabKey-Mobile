@@ -123,7 +123,7 @@ function($,        mobile,          _,            ko,         mapping,          
         if ( pageList[0] === 'LandingPage' ) { pageList.shift(); }
 
         // Grab the old breadcrumbs
-        var oldHierarchy = _.map(PageViewModel.BreadCrumbs.removeAll(), function(value, index) {
+        var oldHierarchy = _.map(PageViewModel.BreadCrumbs(), function(value, index) {
             return value.rawName;
         });
 
@@ -200,22 +200,44 @@ function($,        mobile,          _,            ko,         mapping,          
             var paint = function() {
                 // Update the breadcrumbs
                 var fullPath = "";
-                _.each(pageList, function(value, index) {
-                    if ( fullPath === "" ) {
-                        fullPath = value;
-                    }
-                    else {
-                        fullPath += "/" + value;
-                    }
-
-                    PageViewModel.BreadCrumbs.push({
+                var pageListWithFullNames = _.map(pageList, function(val, i) {
+                    var ret = pageList.slice(0,i);
+                    ret.push(val);
+                    return ret.join("/");
+                });
+                var makeBreadCrumbObject = function(fullPath) {
+                    var shortName = fullPath.split("/").pop();
+                    return {
                         location: fullPath,
                         pageExists: pageManifest[fullPath].hasHTML,
-                        rawName: value,
-                        Name: value.replace(/([A-Z])/g, ' $1'),
-                        isLast: (index === pageList.length-1)
+                        rawName: shortName,
+                        Name: shortName.replace(/([A-Z])/g, ' $1'),
+                        isLast: (fullPath === pageListWithFullNames[pageListWithFullNames.length - 1])
+                    }
+                };
+
+                if ( onSameTree ) {
+                    if (onSameTree.direction === 'up') {
+                        while( pageList.length < PageViewModel.BreadCrumbs().length ) {
+                            PageViewModel.BreadCrumbs.pop()
+                        }
+                    }
+                    else {
+                        var remainingPages = pageListWithFullNames.slice(PageViewModel.BreadCrumbs().length);
+
+                        _.each(remainingPages, function(val) {
+                            PageViewModel.BreadCrumbs.push(
+                                makeBreadCrumbObject(val)
+                            );
+                        })
+                    }
+                }
+                else {
+                    var breadcrumbs = _.map(pageListWithFullNames, function(val) {
+                        return makeBreadCrumbObject(val)
                     });
-                });
+                    PageViewModel.BreadCrumbs(breadcrumbs);
+                }
 
                 // So that this element can pretend to be it's own element, but still have access to the
                 // root ViewModel, use the "with" binding.
