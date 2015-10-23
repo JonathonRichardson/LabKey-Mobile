@@ -1,0 +1,11 @@
+<h1>Credits</h1>
+
+{{#foreach: images}}
+<img data-bind="attr: {src: '/{@{ModuleName}@}/' + imageUrl }" style="max-width: 400px">
+<p>Credits File: {{path}}</p>
+<p>Path on this Site: {{imageUrl}}</p>
+<ul data-bind="foreach: infoFields">
+    <li>{{key}}: {{value}}</li>
+</ul>
+<hr>
+{{/foreach}}

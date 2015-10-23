@@ -1,5 +1,7 @@
 var bump     = require('gulp-bump'),
     debug    = require('gulp-debug'),
+    insert   = require('gulp-insert'),
+    concat   = require('gulp-concat'),
     uuid     = require('node-uuid'),
     rename   = require('gulp-rename'),
     replace  = require('gulp-replace'),
@@ -8,8 +10,10 @@ var bump     = require('gulp-bump'),
     _        = require('underscore'),
     del      = require('del'),
     os       = require('os'),
+    glob     = require('glob'),
     path     = require('path'),
     gutil    = require('gulp-util'),
+    formatJSON = require('format-json'),
     spawn    = require('child_process').spawn;
     fs       = require('fs');
 
@@ -154,7 +158,7 @@ exports.addTasks = function(gulp) {
     }));
 
     var staticContentFilter = filter(['**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
-    core = core.pipe(staticContentFilter).pipe(debug({title: 'filteredFiles'}));
+    core = core.pipe(staticContentFilter);
     core = core.pipe(replace('labkey_mobile', getModuleName()));
 
     var keywords = {
@@ -184,6 +188,47 @@ exports.addTasks = function(gulp) {
     });
 
     return content.pipe(gulp.dest( contentDir ));
+  });
+
+  gulp.task('LKM - Generate Credits JSON', ['LKM - Copy Core Files'], function(cb) {
+    var files = glob.sync('images/**/*.json');
+
+    var imageCredits = [];
+    _.each(files, function(filename) {
+      // Grab file contents
+      var info = JSON.parse(fs.readFileSync(filename));
+
+      // Get name of config file without ".json"
+      var baseName = path.parse(filename);
+      baseName.ext = "";
+      baseName.base = baseName.name;
+      baseName = path.format(baseName);
+
+      // Find the corresponding image file for that file.
+      var imageFiles = glob.sync(baseName + "*");
+      if ( imageFiles.length > 0 ) {
+        imageURL = imageFiles[0];
+      }
+      else {
+        imageURL = null;
+      }
+
+      var credits = {
+        path: filename,
+        info: info,
+        imageUrl: imageURL
+      };
+      imageCredits.push(credits);
+    });
+
+    var creditsJSON = {
+      images: imageCredits
+    };
+
+    var creditsFilePath = path.join(getModuleDir(), 'resources', 'web', getModuleName(), 'content', 'Admin', 'Credits.json');
+    fs.writeFileSync(creditsFilePath, formatJSON.plain(creditsJSON));
+
+    cb();
   });
 
   gulp.task('LKM - Copy Stylesheets', ['LKM - Copy Core Files'], function() {
@@ -273,7 +318,8 @@ exports.addTasks = function(gulp) {
                              'LKM - Copy Stylesheets', 
                              'LKM - Copy Images', 
                              'LKM - Compile module.properties', 
-                             'LKM - Copy Content Files', 
+                             'LKM - Copy Content Files',
+                             'LKM - Generate Credits JSON',
                              'LKM - Compile module.iml'], function() {
     try {
       checkLABKEYROOT(true);
