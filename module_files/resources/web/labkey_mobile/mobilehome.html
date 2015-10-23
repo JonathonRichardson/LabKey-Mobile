@@ -132,7 +132,14 @@
                 <ul class="breadcrumb" data-enhance="false">
                     <li class="first" data-bind="click: $root.GoHome"><a href="#"></a></li>
                     {{#foreach: $root.BreadCrumbs}}
-                      <li data-bind="css: { 'last': isLast }, NavigateTo: location"><a href="#">{{Name}}</a></li>
+                      <li data-bind="css: { 'last': isLast }">
+                          {{#if: pageExists}}
+                          <a href="#" data-bind="NavigateTo: location">{{Name}}</a>
+                          {{/if}}
+                          {{#ifnot: pageExists}}
+                          <span>{{Name}}</span>
+                          {{/if}}
+                      </li>
                     {{/foreach}}
                 </ul>
             </div>

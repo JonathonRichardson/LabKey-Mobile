@@ -1,4 +1,5 @@
-define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping", "display", "jquery.ui"], function($, mobile, _, ko, mapping) {
+define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping", "../corelib/content-manifest","display", "jquery.ui"],
+function($,        mobile,          _,            ko,         mapping,            pageManifest) {
     ko.mapping = mapping;
     $.mobile = mobile;
 
@@ -108,6 +109,7 @@ define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping",
     PageViewModel.LoadPageInternal = function (pageName, stateData) {
         console.log("Trying to load " + pageName + ".html ...");
 
+        var metadata      = pageManifest[pageName];
         var viewModelName = "../content/" + pageName;
         var templateName  = "jqm!../content/" + pageName;
 
@@ -203,11 +205,12 @@ define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping",
                         fullPath = value;
                     }
                     else {
-                        fullPath = "/" + value;
+                        fullPath += "/" + value;
                     }
 
                     PageViewModel.BreadCrumbs.push({
                         location: fullPath,
+                        pageExists: pageManifest[fullPath].hasHTML,
                         rawName: value,
                         Name: value.replace(/([A-Z])/g, ' $1'),
                         isLast: (index === pageList.length-1)
@@ -259,19 +262,16 @@ define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping",
             }
         };
 
-        // Try and load the template and view model.
-        requirejs([viewModelName, templateName], setupPage, function(err) {
-            console.warn("Encountered an error while trying to load page: ", err);
+        var requirements = [templateName];
+        if ( metadata.hasVM ) {
+            requirements.push(viewModelName);
+        }
 
-            // If ONLY the view model failed to load, use a blank object as the view model.
-            if ( (err.requireModules.length === 1) && (err.requireModules[0] === viewModelName) ) {
-                requirejs([templateName], function(template) {
-                    setupPage({}, template)
-                });
-            }
-            else {
-                console.log("failed to load page");
-            }
+        // Actually load the page
+        requirejs(requirements, function() {
+            var template = arguments[0];
+            var VM       = arguments[1] || {};
+            setupPage(VM, template);
         });
 
     };
