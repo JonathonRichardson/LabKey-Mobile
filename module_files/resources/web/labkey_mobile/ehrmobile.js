@@ -153,6 +153,11 @@ define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], fun
             var DomDoneScript = '<script type="text/javascript">LABKEY.loadScripts();</script>';
             var fixedData = data.replace(/(?:<script.*labkey\.js.*?<\/script>)/, '$&' + DomDoneScript);
 
+            /*
+             * Remove CSS From the scripts.
+             */
+            fixedData = fixedData.replace(/<link.*?rel="stylesheet">/g, '');
+
             // "Hide" RequireJS, because Raphael's "eve" module is AMD aware, and it'll break Raphael from loading.
             var _require = require, _define  = define, _requirejs = requirejs;
             require = define = requirejs = undefined;
