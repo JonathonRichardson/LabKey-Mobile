@@ -210,8 +210,6 @@ exports.addTasks = function(gulp) {
         var contentDir = path.join(getModuleDir(), 'resources', 'web', getModuleName(), "content/");
         var files = glob.sync(contentDir + '/**', {mark: true});
 
-        console.log(files);
-
         var fileMap = {};
         _.each(files, function(file) {
             var relPath = path.relative(contentDir, file);
@@ -242,9 +240,7 @@ exports.addTasks = function(gulp) {
         var startOfModule = 'define([],function(){ return ';
         var endOfModule = '});';
 
-        console.log("Files of content: ", formatJSON.plain(fileMap));
         var module = startOfModule + formatJSON.plain(fileMap) + endOfModule;
-        console.log("Module: ", module);
 
         var manifestPath = path.join(getModuleDir(), 'resources', 'web', getModuleName(), 'corelib', 'content-manifest.js');
         fs.writeFileSync(manifestPath, module);
