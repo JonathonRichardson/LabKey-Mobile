@@ -108,8 +108,8 @@ define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping",
     PageViewModel.LoadPageInternal = function (pageName, stateData) {
         console.log("Trying to load " + pageName + ".html ...");
 
-        var viewModelName = "content/" + pageName;
-        var templateName  = "jqm!content/" + pageName;
+        var viewModelName = "../content/" + pageName;
+        var templateName  = "jqm!../content/" + pageName;
 
         var $mainContainer = $('#mainContainer');
         var $currentPage   = $mainContainer.children().filter('[data-bind]');

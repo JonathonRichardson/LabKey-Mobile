@@ -21,43 +21,43 @@ requirejs(["jquery"], function($) {
 
             ko.components.register('inline-textinput-button', {
                 viewModel: {
-                    require: "components/inline-textInput-button"
+                    require: "../components/inline-textInput-button"
                 },
                 template: {
-                    require: "jqm!components/inline-textInput-button"
+                    require: "jqm!../components/inline-textInput-button"
                 }
             });
 
             ko.components.register('kosp-input', {
                 viewModel: {
-                    require: "components/kosp-input"
+                    require: "../components/kosp-input"
                 },
                 template: {
-                    require: "jqm!components/kosp-input"
+                    require: "jqm!../components/kosp-input"
                 }
             });
 
             ko.components.register('ehr-irobs-cageview', {
                 viewModel: {
-                    require: "components/ehr-irobs-cageview"
+                    require: "../components/ehr-irobs-cageview"
                 },
                 template: {
-                    require: "text!components/ehr-irobs-cageview.html"
+                    require: "text!../components/ehr-irobs-cageview.html"
                 }
             });
 
             ko.components.register('ehr-irobs-animalview', {
                 viewModel: {
-                    require: "components/ehr-irobs-animalview"
+                    require: "../components/ehr-irobs-animalview"
                 },
                 template: {
-                    require: "text!components/ehr-irobs-animalview.html"
+                    require: "text!../components/ehr-irobs-animalview.html"
                 }
             });
 
             ko.components.register('ehr-animalview', {
-                viewModel: { require: "components/ehr-animalview" },
-                template:  { require: "text!components/ehr-animalview.html"}
+                viewModel: { require: "../components/ehr-animalview" },
+                template:  { require: "text!../components/ehr-animalview.html"}
             });
 
             requirejs(["core", "jquery", "knockout", "ehrmobile", "knockout.mapping", "xlabkey", "display"], function(core, $, ko, EHRMobile) {

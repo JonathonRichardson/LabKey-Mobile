@@ -1,4 +1,4 @@
-define(['knockout', 'text!./Credits.json', 'jquery'], function(ko, credits, $) {
+define(['knockout', 'text!../../Admin/Credits.json', 'jquery'], function(ko, credits, $) {
     credits = JSON.parse(credits);
 
     var images = ko.observable(_.map(credits.images, function(val) {
@@ -15,7 +15,7 @@ define(['knockout', 'text!./Credits.json', 'jquery'], function(ko, credits, $) {
     }));
 
     var VM = {
-        images: ko.observableArray(credits.images)
+        images: images
     };
 
     return VM;

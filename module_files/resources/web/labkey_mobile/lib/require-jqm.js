@@ -2,7 +2,7 @@ define(["jquery", "jquery.mobile"], function($, mobile) {
     $.mobile = mobile;
 
     var load = function(name, parentRequire, onload, config) {
-        $.get(name + ".html", function(data) {
+        $.get(requirejs.toUrl(name + ".html"), function(data) {
             var $factory = $(document.createElement('div')).css('display', 'none');
             $('body').append($factory);
             $factory.html(data);

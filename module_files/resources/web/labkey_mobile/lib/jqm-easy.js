@@ -53,7 +53,7 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
             }
         },
         template: {
-            require: "text!lib/jqm-easy/jqm-header.html"
+            require: "text!../lib/jqm-easy/jqm-header.html"
         }
     });
 
@@ -75,7 +75,7 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
             }
         },
         template: {
-            require: "text!lib/jqm-easy/jqm-footer.html"
+            require: "text!../lib/jqm-easy/jqm-footer.html"
         }
     });
 
@@ -105,7 +105,7 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
             }
         },
         template: {
-            require: "text!lib/jqm-easy/jqm-panel.html"
+            require: "text!../lib/jqm-easy/jqm-panel.html"
         }
     });
 
@@ -174,7 +174,7 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
            }
        },
         template: {
-            require: "text!lib/jqm-easy/jqm-button.html"
+            require: "text!../lib/jqm-easy/jqm-button.html"
         }
     });
 });
