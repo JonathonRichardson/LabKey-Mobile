@@ -190,6 +190,52 @@ exports.addTasks = function(gulp) {
         return content.pipe(gulp.dest( contentDir ));
     });
 
+    gulp.task('LKM - Compile Content Manifest', ['LKM - Copy Content Files'], function(cb) {
+        var contentDir = path.join(getModuleDir(), 'resources', 'web', getModuleName(), "content/");
+        var files = glob.sync(contentDir + '/**', {mark: true});
+
+        console.log(files);
+
+        var fileMap = {};
+        _.each(files, function(file) {
+            var relPath = path.relative(contentDir, file);
+
+            var parsedPath = path.parse(relPath);
+            var key = path.join( parsedPath.dir, parsedPath.name );
+
+            if (!(key in fileMap)) {
+                fileMap[key] = {
+                    hasVM: false,
+                    hasHTML: false,
+                    data: {}
+                };
+            }
+
+            if (parsedPath.ext === ".js") {
+                fileMap[key].hasVM = true;
+            }
+            else if (parsedPath.ext === ".html") {
+                fileMap[key].hasHTML = true;
+            }
+            else if (parsedPath.ext === ".json") {
+                var data = JSON.parse(fs.readFileSync(file));
+                fileMap[key].data = data;
+            }
+        });
+
+        var startOfModule = 'define([],function(){ return ';
+        var endOfModule = '});';
+
+        console.log("Files of content: ", formatJSON.plain(fileMap));
+        var module = startOfModule + formatJSON.plain(fileMap) + endOfModule;
+        console.log("Module: ", module);
+
+        var manifestPath = path.join(getModuleDir(), 'resources', 'web', getModuleName(), 'corelib', 'content-manifest.js');
+        fs.writeFileSync(manifestPath, module);
+
+        cb();
+    });
+
     gulp.task('LKM - Generate Credits JSON', ['LKM - Copy Core Files'], function(cb) {
         var files = glob.sync('images/**/*.json');
 
@@ -315,12 +361,13 @@ exports.addTasks = function(gulp) {
     });
 
     gulp.task('build_mobile', ['LKM - Copy Components',
-        'LKM - Copy Stylesheets',
-        'LKM - Copy Images',
-        'LKM - Compile module.properties',
-        'LKM - Copy Content Files',
-        'LKM - Generate Credits JSON',
-        'LKM - Compile module.iml'], function() {
+                               'LKM - Copy Stylesheets',
+                               'LKM - Copy Images',
+                               'LKM - Compile module.properties',
+                               'LKM - Copy Content Files',
+                               'LKM - Generate Credits JSON',
+                               'LKM - Compile module.iml',
+                               'LKM - Compile Content Manifest'], function() {
         try {
             checkLABKEYROOT(true);
 
