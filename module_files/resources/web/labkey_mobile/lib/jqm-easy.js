@@ -17,6 +17,13 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
         }
     });
 
+    ko.bindingHandlers.tap = {
+        init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            $(element).on("click", valueAccessor());
+        },
+        update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {}
+    };
+
     ko.components.register("jqm-header", {
         viewModel: {
             createViewModel: function(params, componentInfo) {
@@ -99,6 +106,64 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
         },
         template: {
             require: "text!lib/jqm-easy/jqm-panel.html"
+        }
+    });
+
+    ko.components.register('jqm-button', {
+       viewModel: {
+           createViewModel: function(params, componentInfo) {
+               var $element  = $(componentInfo.element);
+               var innerHTML = componentInfo.templateNodes;
+               var attributes = new AttributeAccessor({element: componentInfo.element});
+
+               var inline = false;
+               if (attributes.get('inline') == "true") {
+                   inline = true;
+               }
+
+               var getInitializedButton = function() {
+                   return $element.find('.buttonTarget').button({
+                       inline:   inline,
+                       enhanced: true,
+                       theme:    'a'
+                   });
+               };
+
+               var disableButton = function() {
+                   getInitializedButton().button('disable');
+               };
+               var enableButton = function() {
+                   getInitializedButton().button('enable');
+               };
+
+               if (ko.isObservable(params.disabled)) {
+                   params.disabled.subscribe(function(value) {
+                       if (value) {
+                           disableButton();
+                       }
+                       else {
+                           enableButton();
+                       }
+                   });
+               }
+
+               var VM = {
+                   innerHTML: innerHTML,
+                   tap: params.click,
+                   jqmEnhance: function(elements) {
+                       $element.attr('data-enhance', null);
+                       var $button = getInitializedButton();
+                       if (params.disabled()) {
+                           $button.button('disable');
+                       }
+                   }
+               };
+
+               return VM;
+           }
+       },
+        template: {
+            require: "text!lib/jqm-easy/jqm-button.html"
         }
     });
 });
