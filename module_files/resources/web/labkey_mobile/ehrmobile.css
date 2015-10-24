@@ -4,11 +4,11 @@
 }
 
 .blur-filter {
-    filter: blur(2px);
-    -webkit-filter: blur(2px);
-    -o-filter: blur(2px);
-    -ms-filter: blur(2px);
-    -mox-filter: blur(2px);
+    filter: blur(2px) brightness(.4);
+    -webkit-filter: blur(2px) brightness(.4);
+    -o-filter: blur(2px) brightness(.4);
+    -ms-filter: blur(2px) brightness(.4);
+    -mox-filter: blur(2px) brightness(.4);
 }
 
 /*
@@ -17,18 +17,15 @@
 #loginDialog {
     width: 300px;
     height: 200px;
-    margin: auto;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    border: 2px solid black;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    box-shadow: 10px 10px 5px #888888;
     padding: 20px;
+    background: white;
+}
+
+#loginDialog > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
 
 .ehrmobile-login-page {

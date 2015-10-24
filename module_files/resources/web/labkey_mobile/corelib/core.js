@@ -3,7 +3,7 @@ function($,        mobile,          _,            ko,         mapping,          
     ko.mapping = mapping;
     $.mobile = mobile;
 
-    $('#loginPage').popup({});
+    $('#loginPage').enhanceWithin().popup({});
 
     PageViewModel = {
         loginInfo: {
@@ -36,6 +36,7 @@ function($,        mobile,          _,            ko,         mapping,          
 
     $(document).on('notauthorized', function(e) {
         PageViewModel.loginInfo.state('');
+        $('#mainContentPage').addClass('blur-filter');
         $('#loginPage').popup('open');
     });
 
@@ -46,6 +47,7 @@ function($,        mobile,          _,            ko,         mapping,          
             PageViewModel.user.DisplayName(eventData.displayName);
         }
 
+        $('.blur-filter').removeClass('blur-filter');
         $('#loginPage').popup('close');
     });
 

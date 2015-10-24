@@ -109,26 +109,29 @@
         min-height: 100%;
     }
 </style>
-<div data-role="page" id="mainContentPage">
-    <!-- Login Page -->
-    <div data-role="popup" id="loginPage" data-dismissible="false"
-         data-position-to="window" class="ehrmobile-login-page">
-        <div id="loginDialog" class="ehrmobile-login" data-bind="OnEnter: $root.login">
-            {{#switch: $root.loginInfo.state}}
-            {{#case: 'loggingin'}}
-            <span>Logging In...</span>
-            {{/case}}
 
-            {{#case: $default}}
-            <p style="text-align: center">Please Log in.</p>
-            <kosp-input params="text: 'Username (email)', value: $root.loginInfo.username                  "></kosp-input>
-            <kosp-input params="text: 'Password',         value: $root.loginInfo.password, type: 'password'"></kosp-input>
-            <button data-role="button" id="login-button" data-bind="click: $root.login">Login</button>
-            {{/case}}
-            {{/switch}}
+<!-- Login Page -->
+<div data-role="popup" id="loginPage" data-dismissible="false" data-history="false"
+     data-position-to="window" class="ehrmobile-login-page">
+    <div id="loginDialog" class="ehrmobile-login" data-bind="OnEnter: $root.login">
+        {{#switch: $root.loginInfo.state}}
+        {{#case: 'loggingin'}}
+        <div>
+            <img src="images/loader.gif" style="height: 150px">
         </div>
-    </div>
+        {{/case}}
 
+        {{#case: $default}}
+        <p style="text-align: center">Please Log in.</p>
+        <kosp-input params="text: 'Username (email)', value: $root.loginInfo.username                  "></kosp-input>
+        <kosp-input params="text: 'Password',         value: $root.loginInfo.password, type: 'password'"></kosp-input>
+        <button data-role="button" id="login-button" data-bind="click: $root.login">Login</button>
+        {{/case}}
+        {{/switch}}
+    </div>
+</div>
+
+<div data-role="page" id="mainContentPage">
     <jqm-header params="title: 'EHR'" data-enhance="false">
         <button class="ui-icon-gear" data-bind="click: $root.ShowAccountPanel">{{$parent.user.DisplayName}}</button>
         <button class="ui-icon-grid" data-bind="click: $root.ShowMenuPanel"     >Menu</button>
