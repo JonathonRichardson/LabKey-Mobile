@@ -3,6 +3,8 @@ function($,        mobile,          _,            ko,         mapping,          
     ko.mapping = mapping;
     $.mobile = mobile;
 
+    $('#loginPage').popup({});
+
     PageViewModel = {
         loginInfo: {
             username: ko.observable(),
@@ -34,7 +36,7 @@ function($,        mobile,          _,            ko,         mapping,          
 
     $(document).on('notauthorized', function(e) {
         PageViewModel.loginInfo.state('');
-        _switchToPage('loginPage');
+        $('#loginPage').popup('open');
     });
 
     $(document).on('logincompleted', function(e) {
@@ -44,7 +46,7 @@ function($,        mobile,          _,            ko,         mapping,          
             PageViewModel.user.DisplayName(eventData.displayName);
         }
 
-        _switchToPage('mainContentPage');
+        $('#loginPage').popup('close');
     });
 
 

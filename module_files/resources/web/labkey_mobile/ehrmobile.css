@@ -3,6 +3,14 @@
     margin-left: 10px;
 }
 
+.blur-filter {
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    -mox-filter: blur(2px);
+}
+
 /*
  * Center the login dialog
  */
@@ -15,6 +23,12 @@
     right: 0;
     top: 0;
     bottom: 0;
+    border: 2px solid black;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    box-shadow: 10px 10px 5px #888888;
+    padding: 20px;
 }
 
 .ehrmobile-login-page {

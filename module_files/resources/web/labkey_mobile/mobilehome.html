@@ -5,9 +5,24 @@
 
     <title>EHR Mobile</title>
 
+    <!-- jQuery and jQuery Mobile -->
+    <link rel="stylesheet" href="extlib/jquery.mobile-1.4.5/jquery.mobile-1.4.5.css"/>
+    <link rel="stylesheet" href="extlib/jquery-ui/jquery-ui.min.css"/>
+
+    <!-- jQuery Breadcrumb plug-in -->
+    <link rel="stylesheet" href="extlib/Styles/Base.css"/>
+    <link rel="stylesheet" href="extlib/Styles/BreadCrumb.css"/>
+
+    <!-- Module Theme CSS -->
+    <link rel="stylesheet" href="css/theme.css"/>
+
+    <!-- EHRMobile CSS -->
+    <link rel="stylesheet" href="ehrmobile.css"/>
+
     <script>
         // Clear the hash, to ensure we start out on the splash screen.
         //document.location.hash = '';
+        /*
         var _switchToPage = function(page) {
             var curHashParams = location.hash;
             if ( curHashParams.indexOf("?") === -1 ) {
@@ -19,6 +34,7 @@
             document.location.hash = '#' + page + '?' + curHashParams;
         };
         _switchToPage('loginPage');
+        */
 
         // Configure RequireJS
         require = {
@@ -74,19 +90,7 @@
     </script>
     <script src="extlib/require.js" data-main="mobile-main"></script>
 
-    <!-- jQuery and jQuery Mobile -->
-    <link rel="stylesheet" href="extlib/jquery.mobile-1.4.5/jquery.mobile-1.4.5.css"/>
-    <link rel="stylesheet" href="extlib/jquery-ui/jquery-ui.min.css"/>
 
-    <!-- jQuery Breadcrumb plug-in -->
-    <link rel="stylesheet" href="extlib/Styles/Base.css"/>
-    <link rel="stylesheet" href="extlib/Styles/BreadCrumb.css"/>
-
-    <!-- Module Theme CSS -->
-    <link rel="stylesheet" href="css/theme.css"/>
-
-    <!-- EHRMobile CSS -->
-    <link rel="stylesheet" href="ehrmobile.css"/>
 
     <!-- Set Viewport for jQuery Mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
@@ -94,23 +98,7 @@
 </head>
 <body>
 
-<!-- Login Page -->
-<div data-role="page" id="loginPage" class="ehrmobile-login-page">
-    <div id="loginDialog" class="ehrmobile-login" data-bind="OnEnter: $root.login">
-    {{#switch: $root.loginInfo.state}}
-        {{#case: 'loggingin'}}
-            <span>Logging In...</span>
-        {{/case}}
 
-        {{#case: $default}}
-            <p style="text-align: center">Please Log in.</p>
-            <kosp-input params="text: 'Username (email)', value: $root.loginInfo.username                  "></kosp-input>
-            <kosp-input params="text: 'Password',         value: $root.loginInfo.password, type: 'password'"></kosp-input>
-            <button data-role="button" id="login-button" data-bind="click: $root.login">Login</button>
-        {{/case}}
-    {{/switch}}
-    </div>
-</div>
 
 <style>
     /*
@@ -122,6 +110,25 @@
     }
 </style>
 <div data-role="page" id="mainContentPage">
+    <!-- Login Page -->
+    <div data-role="popup" id="loginPage" data-dismissible="false"
+         data-position-to="window" class="ehrmobile-login-page">
+        <div id="loginDialog" class="ehrmobile-login" data-bind="OnEnter: $root.login">
+            {{#switch: $root.loginInfo.state}}
+            {{#case: 'loggingin'}}
+            <span>Logging In...</span>
+            {{/case}}
+
+            {{#case: $default}}
+            <p style="text-align: center">Please Log in.</p>
+            <kosp-input params="text: 'Username (email)', value: $root.loginInfo.username                  "></kosp-input>
+            <kosp-input params="text: 'Password',         value: $root.loginInfo.password, type: 'password'"></kosp-input>
+            <button data-role="button" id="login-button" data-bind="click: $root.login">Login</button>
+            {{/case}}
+            {{/switch}}
+        </div>
+    </div>
+
     <jqm-header params="title: 'EHR'" data-enhance="false">
         <button class="ui-icon-gear" data-bind="click: $root.ShowAccountPanel">{{$parent.user.DisplayName}}</button>
         <button class="ui-icon-grid" data-bind="click: $root.ShowMenuPanel"     >Menu</button>
