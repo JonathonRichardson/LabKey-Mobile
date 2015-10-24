@@ -49,6 +49,7 @@ function($,        mobile,          _,            ko,         mapping,          
 
         $('.blur-filter').removeClass('blur-filter');
         $('#loginPage').popup('close');
+        PageViewModel.LoadPage('LandingPage');
     });
 
 
