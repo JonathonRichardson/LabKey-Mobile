@@ -19,17 +19,6 @@ function($,        mobile,          _,            ko,         mapping,          
         PageViewModels: {}
     };
 
-    var _switchToPage = function(page) {
-        var curHashParams = location.hash;
-        if ( curHashParams.indexOf("?") === -1 ) {
-            curHashParams = "";
-        }
-        else {
-            curHashParams = curHashParams.substr(curHashParams.indexOf("?") + 1);
-        }
-        $.mobile.changePage('#' + page + '?' + curHashParams);
-    };
-
     $(document).on('loginsuccess', function() {
         PageViewModel.loginInfo.state('loggingin');
     });
@@ -47,9 +36,18 @@ function($,        mobile,          _,            ko,         mapping,          
             PageViewModel.user.DisplayName(eventData.displayName);
         }
 
+        var curHashParams = location.hash;
+        if ( curHashParams.indexOf("?") === -1 ) {
+            curHashParams = "";
+        }
+        else {
+            curHashParams = curHashParams.substr(curHashParams.indexOf("?") + 1);
+        }
+        var page = URLUtils.decodePageName(curHashParams.match(/page=([A-Za-z.]*)/)[1]  || "LandingPage");
+
         $('.blur-filter').removeClass('blur-filter');
         $('#loginPage').popup('close');
-        PageViewModel.LoadPage('LandingPage');
+        PageViewModel.LoadPage(page);
     });
 
 
