@@ -248,8 +248,9 @@ exports.addTasks = function(gulp) {
         cb();
     });
 
-    gulp.task('LKM - Generate Credits JSON', ['LKM - Copy Core Files'], function(cb) {
-        var files = glob.sync('images/**/*.json');
+    gulp.task('LKM - Generate Credits JSON', ['LKM - Copy Images'], function(cb) {
+        var imageDir = path.join(getModuleDir(), 'resources', 'web', getModuleName(), 'images');
+        var files = glob.sync( imageDir + "/**/*.json");
 
         var imageCredits = [];
         _.each(files, function(filename) {
@@ -263,13 +264,14 @@ exports.addTasks = function(gulp) {
             baseName = path.format(baseName);
 
             // Find the corresponding image file for that file.
-            var imageFiles = glob.sync(baseName + "*");
+            var imageFiles = glob.sync( baseName + "*");
             if ( imageFiles.length > 0 ) {
                 imageURL = imageFiles[0];
             }
             else {
-                imageURL = null;
+                imageURL = "";
             }
+            imageURL = path.relative( path.join(imageDir, ".."), imageURL);
 
             var credits = {
                 path: filename,
