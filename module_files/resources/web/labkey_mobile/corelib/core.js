@@ -209,13 +209,20 @@ function($,        mobile,          _,            ko,         mapping,          
                     ret.push(val);
                     return ret.join("/");
                 });
+
                 var makeBreadCrumbObject = function(fullPath) {
                     var shortName = fullPath.split("/").pop();
+
+                    var name = shortName.replace(/([A-Z])/g, ' $1');
+                    if ( 'name' in pageManifest[fullPath].data) {
+                        name = pageManifest[fullPath].data.name;
+                    }
+
                     return {
                         location: fullPath,
                         pageExists: pageManifest[fullPath].hasHTML,
                         rawName: shortName,
-                        Name: shortName.replace(/([A-Z])/g, ' $1'),
+                        Name: name,
                         isLast: (fullPath === pageListWithFullNames[pageListWithFullNames.length - 1])
                     }
                 };
