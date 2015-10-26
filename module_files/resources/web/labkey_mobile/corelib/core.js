@@ -43,7 +43,8 @@ function($,        mobile,          _,            ko,         mapping,          
         else {
             curHashParams = curHashParams.substr(curHashParams.indexOf("?") + 1);
         }
-        var page = URLUtils.decodePageName(curHashParams.match(/page=([A-Za-z.]*)/)[1]  || "LandingPage");
+        var pageParam = (curHashParams.match(/page=([A-Za-z.]*)/) || [])[1];
+        var page = URLUtils.decodePageName( pageParam || "LandingPage");
 
         $('.blur-filter').removeClass('blur-filter');
         $('#loginPage').popup('close');
