@@ -9,19 +9,50 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
         // Do nothing.
     }
 
+    var noOp = function() {};
+
+    var getParent = function(newClassObj) {
+        // First, call the parent constructor, if one exists.
+        var parent;
+        if ('parent' in newClassObj){
+            parent = newClassObj.parent;
+            if (!('_innerConstructor' in parent)) {
+                parent._innerConstructor = noOp;
+            }
+
+            return parent;
+        }
+        else {
+            return false;
+        }
+    };
+
+    var getParentRecursive = function(parents) {
+        if (!_.isArray(parents)) {
+            parents = [parents]
+        }
+
+        var nextParent = getParent( parents[0] );
+        if ( nextParent ) {
+            parents.unshift(nextParent);
+            return getParentRecursive(parents);
+        }
+        else {
+            return parents;
+        }
+    };
+
     Classify.newClass = function(config) {
         var newObject = function(constructorConfig) {
             var self = this;
 
-            // First, call the parent constructor, if one exists.
-            if (('parent' in this) && ('_innerConstructor' in this.parent)) {
-                this.parent._innerConstructor.call(this, constructorConfig);
-            }
+            // Grab the inheritance tree.
+            var familyTree = getParentRecursive(this);
 
-            // Now, call the passed in constructor for this object
-            if ('_innerConstructor' in this) {
-                this._innerConstructor.call(this, constructorConfig);
-            }
+            // Call all constructors in order.
+            _.each(familyTree, function(newClassObj) {
+                newClassObj._innerConstructor.call(self, constructorConfig);
+            });
 
             // Only support computed methods if knockout has been loaded
             if (!_.isUndefined(ko) && !_.isUndefined(self._ko_computeds)) {
@@ -124,7 +155,7 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
         }
     });
 
-    Classify.Version = '0.0.31';
+    Classify.Version = '0.0.37';
 
     return Classify;
 
