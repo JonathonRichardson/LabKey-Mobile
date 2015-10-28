@@ -170,6 +170,33 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
         }
     });
 
+    ko.components.register('jqm-select', {
+        viewModel: {
+            createViewModel: function(params, componentInfo) {
+                var $element = $(componentInfo.element);
+                var $select  = $element.find('select');
+
+                var VM = {
+                    options: params.options,
+                    placeholder: params.placeholder || "",
+                    value: params.value || ko.observable(),
+                    jqmEnhance: function() {
+                        $select.selectmenu();
+
+                        params.options.subscribe(function() {
+                            $select.selectmenu('refresh');
+                        });
+                    }
+                };
+
+                return VM;
+            }
+        },
+        template: {
+            require: "text!../extlib/jqm-easy/jqm-select.html"
+        }
+    });
+
     ko.components.register('jqm-button', {
        viewModel: {
            createViewModel: function(params, componentInfo) {
