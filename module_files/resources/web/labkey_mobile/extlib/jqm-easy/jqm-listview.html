@@ -1,0 +1,10 @@
+<ul data-role="listview" data-bind="foreach: listitems">
+    <li>
+        <a data-bind="click: clickAction" href="">{{displayText}}</a>
+        {{#if: $component.split}}
+        <a data-bind="click: secondaryClickAction" href="#"></a>
+        {{/if}}
+    </li>
+</ul>
+
+<div data-bind="template: {nodes: [document.createElement('span')], afterRender: jqmEnhance}"></div>

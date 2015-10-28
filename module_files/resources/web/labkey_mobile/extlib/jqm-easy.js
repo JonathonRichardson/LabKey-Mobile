@@ -109,6 +109,67 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
         }
     });
 
+    var noOp = function(){};
+
+    ko.components.register('jqm-listview', {
+        viewModel: {
+            createViewModel: function(params, componentInfo) {
+                params = params || {};
+                var $element  = $(componentInfo.element);
+                var $listview = $element.find('[data-role="listview"]');
+                var attributes = new AttributeAccessor({element: componentInfo.element});
+
+                var inset = false;
+                if (attributes.get('inset') == "true") {
+                    inset = true;
+                }
+
+                var split = false;
+                if (attributes.get('split') == "true") {
+                    split = true;
+                }
+
+                var splitIcon = "arrow-r";
+                if ( attributes.get('split-icon') !== null ) {
+                    splitIcon = attributes.get('split-icon')
+                }
+
+                // Check if we were passed an observableArray.  If not, turn it into one.
+                if (!ko.isObservable(params.listitems)) {
+                    // Ensure the contents are an array
+                    if ( !_.isArray(ko.unwrap(params.listitems)) ) {
+                        params.listitems = [params.listitems];
+                    }
+
+                    params.listitems = ko.observableArray(params.listitems)
+                }
+                else if ( !('push' in params.listitems) ){
+                    params.listitems = ko.observableArray(ko.unwrap(params.listitems));
+                }
+
+                var VM = {
+                    listitems: params.listitems,
+                    jqmEnhance: function() {
+                        $listview.listview({
+                            inset: inset,
+                            splitIcon: splitIcon
+                        });
+
+                        params.listitems.subscribe(function() {
+                            $listview.listview('refresh');
+                        });
+                    },
+                    split: ko.observable(split)
+                };
+
+                return VM;
+            }
+        },
+        template: {
+            require: "text!../extlib/jqm-easy/jqm-listview.html"
+        }
+    });
+
     ko.components.register('jqm-button', {
        viewModel: {
            createViewModel: function(params, componentInfo) {
