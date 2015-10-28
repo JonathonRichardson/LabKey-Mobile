@@ -223,7 +223,7 @@ function($,        mobile,          _,            ko,         mapping,          
                         pageExists: pageManifest[fullPath].hasHTML,
                         rawName: shortName,
                         Name: name,
-                        isLast: (fullPath === pageListWithFullNames[pageListWithFullNames.length - 1])
+                        isLast: ko.observable(fullPath === pageListWithFullNames[pageListWithFullNames.length - 1])
                     }
                 };
 
@@ -236,6 +236,11 @@ function($,        mobile,          _,            ko,         mapping,          
                     else {
                         var remainingPages = pageListWithFullNames.slice(PageViewModel.BreadCrumbs().length);
 
+                        var curCrumbs = PageViewModel.BreadCrumbs();
+                        if ( curCrumbs.length > 0) {
+                            var lastCrumb = curCrumbs[curCrumbs.length - 1];
+                            lastCrumb.isLast(false);
+                        }
                         _.each(remainingPages, function(val) {
                             PageViewModel.BreadCrumbs.push(
                                 makeBreadCrumbObject(val)
