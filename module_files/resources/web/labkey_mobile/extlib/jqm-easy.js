@@ -252,6 +252,13 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
                    jqmEnhance: function(elements) {
                        $element.attr('data-enhance', null);
                        var $button = getInitializedButton();
+
+                       // Not sure why, but the buttom initialization seems to ignore the inline option, so we force
+                       // it manually here.
+                       if (!inline) {
+                           $button.button({inline: false});
+                       }
+
                        if (params.disabled()) {
                            $button.button('disable');
                        }
