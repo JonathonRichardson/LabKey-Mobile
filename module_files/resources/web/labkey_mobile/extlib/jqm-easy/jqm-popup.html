@@ -1,0 +1,8 @@
+<div class="ui-screen-hidden ui-popup-screen ui-overlay-inherit" id="{{id}}-screen"></div>
+<div class="ui-popup-container ui-popup-hidden ui-popup-truncate" id="{{id}}-popup">
+    <div data-enhanced="true" id="{{id}}" data-role="popup" class="ui-popup ui-body-inherit ui-overlay-shadow ui-corner-all">
+        {{#with: innerVM}}
+        <div class="popupTarget" data-bind="template: {nodes: $component.innerHTML, afterRender: $component.jqmEnhance}"></div>
+        {{/with}}
+    </div>
+</div>

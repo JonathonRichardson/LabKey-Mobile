@@ -197,6 +197,80 @@ define(["jquery", "jquery.mobile", "knockout", "underscore", "classify"], functi
         }
     });
 
+    ko.observable.fn.withPausing = function() {
+        this.notifySubscribers = function() {
+            if (!this.pauseNotifications) {
+                ko.subscribable.fn.notifySubscribers.apply(this, arguments);
+            }
+        };
+
+        this.sneakyUpdate = function(newValue) {
+            this.pauseNotifications = true;
+            this(newValue);
+            this.pauseNotifications = false;
+        };
+
+        return this;
+    };
+
+    function generateUUID(){
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    }
+
+    ko.components.register('jqm-popup', {
+        viewModel: {
+            createViewModel: function(params, componentInfo) {
+                var $element  = $(componentInfo.element);
+                var innerHTML = componentInfo.templateNodes;
+
+                var $popup;
+
+                var open = ko.observable(false).withPausing();
+                if ( ('open' in params) && ko.isObservable(params.open) ) {
+                    open = params.open.withPausing();
+                }
+
+                var VM = {
+                    innerVM:    params.innerVM || {},
+                    open:       open,
+                    id:         generateUUID(),
+                    innerHTML:  innerHTML,
+                    jqmEnhance: function(elements) {
+                        $popup = $element.find('.popupTarget').popup({
+                            afterclose: function() {
+                                open.sneakyUpdate(false);
+                            }
+                        });
+
+                        open.subscribe(function(value){
+                            if ( value === true ) {
+                                $popup.popup('open');
+                            }
+                            else {
+                                $popup.popup('close');
+                            }
+                        });
+
+                        if (open()) {
+                            $popup.popup('open');
+                        }
+                    }
+                };
+
+                return VM;
+            }
+        },
+        template: {
+            require: "text!../extlib/jqm-easy/jqm-popup.html"
+        }
+    });
+
     ko.components.register('jqm-button', {
        viewModel: {
            createViewModel: function(params, componentInfo) {
