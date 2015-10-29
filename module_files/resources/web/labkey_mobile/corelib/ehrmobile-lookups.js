@@ -16,7 +16,7 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
             config = config || {};
             this.name          = config.name;
             this.queryName     = config.queryName;
-            this.schemaName    = 'ehr_lookups';
+            this.schemaName    = config.schemaName || 'ehr_lookups';
             this.ko$dataLoaded = ko.observable(false);
 
             this.getKeyFunction   = getAccessorFunction(config.keyAccessor);
@@ -207,6 +207,21 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
         queryName:     'obs_behavior',
         keyAccessor:   'value',
         valueAccessor: 'title'
+    });
+
+    Lookups.addTable({
+        name:          'status',
+        schemaName:    'study',
+        queryName:     'qcstate',
+        keyAccessor:   'RowId',
+        valueAcceesor: 'Label'
+    });
+
+    Lookups.addTable({
+        name:          'rooms_and_areas',
+        queryName:     'rooms',
+        keyAccessor:   'room',
+        valueAcceesor: 'area'
     });
 
     return Lookups;
