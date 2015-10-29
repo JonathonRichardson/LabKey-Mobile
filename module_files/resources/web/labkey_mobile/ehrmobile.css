@@ -46,7 +46,7 @@ div.viewAnimal-animalid-text {
 /* On the animal page, make the ID text box and button show up on the same line and look like one piece */
 div.viewAnimal-animalid-container div.viewAnimal-animalid-button div { border-radius: 0 5px 5px 0; } /* this needs to be this specific to override other styles */
 div.viewAnimal-animalid-text div { border-radius: 5px 0 0 5px; border-right: none; }
-div.viewAnimal-animalid-button { width: 120px; }
+div.viewAnimal-animalid-button { width: 150px; }
 div.viewAnimal-animalid-text { border: none; }
 
 div.viewAnimal-animalid-container {
