@@ -70,6 +70,9 @@
 {
 	display: block;
 	overflow: hidden;
+	color: black;
+	text-shadow: none;
+	font-weight: 500;
 }
 .breadCrumb ul li a, ul li span
 {
@@ -79,6 +82,7 @@
 	line-height: 21px;
 	overflow: hidden;
 	float: left;
+	text-decoration: inherit;
 }
 .breadCrumb ul li.first a
 {
