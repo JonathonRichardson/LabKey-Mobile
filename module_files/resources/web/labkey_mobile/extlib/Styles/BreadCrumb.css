@@ -39,6 +39,13 @@
 	border:solid 1px #dedede;
 	background:#fff;
 }
+
+.breadCrumbHolder
+{
+    margin:0 0 20px 0;
+}
+
+
 .breadCrumb ul
 {
 	margin: 0;
