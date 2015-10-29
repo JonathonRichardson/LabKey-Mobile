@@ -17,6 +17,12 @@ define([], function() {
 
     var XLABKEY = {};
 
+    XLABKEY.Utils = {
+        generateUUID: function() {
+            return LABKEY.Utils.generateUUID();
+        }
+    };
+
     XLABKEY.Meta = XLABKEY.Meta || {};
 
     XLABKEY.Query = XLABKEY.Query || {};
