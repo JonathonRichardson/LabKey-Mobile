@@ -73,5 +73,28 @@ define([], function() {
         LABKEY.Query.saveRows(config);
     };
 
+    XLABKEY.Query.deleteRows = function(config) {
+        //Save off current query.
+        XLABKEY.Meta.currentQuery = function() {
+            XLABKEY.Query.selectRows(config);
+        };
+
+        // Wrap the Success function
+        var origSuccess = config.success || function(data) {};
+        config.success = function(data) {
+            XLABKEY.Meta.currentQuery = undefined;
+            origSuccess(data);
+        };
+
+        // Set a proper container path.
+        config.containerPath = "WNPRC/EHR";
+
+        // Wrap the Failure function
+        var origFailure = config.failure || function() {};
+        config.failure = failureWrapper(origFailure);
+
+        LABKEY.Query.deleteRows(config);
+    };
+
     return XLABKEY;
 });
