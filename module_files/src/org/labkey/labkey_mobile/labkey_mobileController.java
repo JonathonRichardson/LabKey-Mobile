@@ -67,7 +67,7 @@ public class labkey_mobileController extends SpringActionController
         public ModelAndView getView(FORM form, BindException errors) throws Exception
         {   
             JspView view = new JspView("/org/labkey/labkey_mobile/minTemplate.jsp");
-            view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
+            //view.addClientDependency(ClientDependency.fromPath("/wnprc_ehr/c3"));
             view.setFrame(WebPartView.FrameType.NONE);
             return view;
         }   
@@ -78,7 +78,7 @@ public class labkey_mobileController extends SpringActionController
      */
     @Override
     protected ModelAndView getTemplate(ViewContext context, ModelAndView mv, Controller action, PageConfig page) {
-        JspView<PageConfig> template = new JspView<PageConfig>("/org/labkey/wnprc_ehr/minTemplate.jsp", page);
+        JspView<PageConfig> template = new JspView<PageConfig>("/org/labkey/labkey_mobile/minTemplate.jsp", page);
         template.setBody(mv);
         template.setFrame(WebPartView.FrameType.NONE);
         return template;

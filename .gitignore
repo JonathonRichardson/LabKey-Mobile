@@ -4,3 +4,6 @@ deploy
 
 # Ignore any IntelliJ configurations
 **/.idea
+
+# Ignore metadata from OSX file system
+**/.DS_Store
