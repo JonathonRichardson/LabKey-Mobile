@@ -1,4 +1,5 @@
-var bump     = require('gulp-bump'),
+var babel    = require('gulp-babel'),
+    bump     = require('gulp-bump'),
     debug    = require('gulp-debug'),
     insert   = require('gulp-insert'),
     concat   = require('gulp-concat'),
@@ -22,6 +23,40 @@ var licenseUtil = require('./license-util.js');
 exports.addTasks = function(gulp) {
     var cleanFiles = function() {
         del.sync(['deploy']);
+    };
+
+    var buildTasksDir = path.join(__dirname);
+
+    //
+    // This function uses a filter for .es6/.jsx/.js6 files and compiles them down to
+    // ES5 .js files using babel.  It has the 2015 standard, plus the addition of
+    // async functions.
+    var babelDisclaimer = fs.readFileSync(path.join(buildTasksDir, 'Babel-Disclaimer.txt')) + '\n\n';
+    var babelCompile = function(stream) {
+        // Set a filter to just grab the stuff we want...
+        var jsFilter = filter(['**/*.jsx', '**/*.es6', '**/*.js6'], {restore: true});
+        stream = stream.pipe(jsFilter);
+
+        // Now, transform async functions to ES6 generators...
+        stream = stream.pipe(babel({
+            "plugins": ["transform-async-to-generator"]
+
+        }));
+
+        // And, transform all of that es6 down to es5...
+        stream = stream.pipe(babel({
+            "presets": ["es2015"]
+        }));
+
+        // Rename all of the files, now that they're plain old javascript...
+        stream = stream.pipe(rename({extname: ".js"}));
+
+        // Prepend the disclaimer to note their origin and explain their odd syntax.
+        stream = stream.pipe(insert.prepend(babelDisclaimer));
+
+        // Finally, restore the stream to it's pre-filter glory.
+        stream = stream.pipe(jsFilter.restore);
+        return stream
     };
 
     var die = function() {
@@ -157,9 +192,11 @@ exports.addTasks = function(gulp) {
             });
         }));
 
-        var staticContentFilter = filter(['**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
+        var staticContentFilter = filter(['**/*.jsx','**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
         core = core.pipe(staticContentFilter);
         core = core.pipe(replace('labkey_mobile', getModuleName()));
+
+        core = babelCompile(core);
 
         var keywords = {
             Version: getVersion(),
@@ -187,6 +224,8 @@ exports.addTasks = function(gulp) {
             content = content.pipe(replace('{@{' + keyword + '}@}', value));
         });
 
+        content = babelCompile(content);
+
         return content.pipe(gulp.dest( contentDir ));
     });
 
@@ -202,6 +241,8 @@ exports.addTasks = function(gulp) {
         _.each(keywords, function(value, keyword) {
             js = js.pipe(replace('{@{' + keyword + '}@}', value));
         });
+
+        js = babelCompile(js);
 
         return js.pipe(gulp.dest( jsDir ));
     });

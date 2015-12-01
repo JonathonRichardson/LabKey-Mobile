@@ -1,0 +1,9 @@
+/*
+ *  ** IMPORTANT **
+ *
+ *  This javascript file was compiled using Babel from a file with the same name
+ *  but with the extension "jsx".  The original source file contained ES6/ES2015
+ *  code, and Babel converted it to ES5 compliant code.  This is important to
+ *  note because some of the code patterns in this file may be an artifact of
+ *  that compilation process.
+ */

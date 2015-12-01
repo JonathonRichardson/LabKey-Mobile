@@ -1,0 +1,18 @@
+<h1>ES6Tests</h1>
+
+<ul>
+    {{#foreach: tests}}
+    <li>
+        <span>{{name}} (</span>
+        {{#switch: result}}
+            {{#case: true}}
+            <span style="color: green">Success</span>
+            {{/case}}
+            {{#case: $default}}
+            <span style="color: red">Failed</span>
+            {{/case}}
+        {{/switch}}
+        <span>)</span>
+    </li>
+    {{/foreach}}
+</ul>

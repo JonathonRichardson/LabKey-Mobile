@@ -1,6 +1,6 @@
 {
   "name": "labkey-mobile",
-  "version": "0.2.156",
+  "version": "0.2.158",
   "description": "Generates mobile module for use with Labkey",
   "main": "index.js",
   "scripts": {
@@ -20,10 +20,13 @@
     "gulp-debug": "^2.1.2"
   },
   "dependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.3.0",
+    "babel-preset-es2015": "^6.1.18",
     "del": "~2.0.2",
     "format-json": "~1.0.3",
     "glob": "~6.0.1",
     "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.0",
     "gulp-bump": "~1.0.0",
     "gulp-concat": "~2.6.0",
     "gulp-debug": "~2.1.2",
