@@ -81,7 +81,7 @@
 	text-shadow: none;
 	font-weight: 500;
 }
-.breadCrumb ul li a, ul li span
+.breadCrumb ul li a, .breadCrumb ul li span
 {
 	display: block;
 	position: relative;
