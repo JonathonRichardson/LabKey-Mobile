@@ -1,10 +1,29 @@
 define(["classify", "jquery", "underscore", "ehrmobile-lookups", "xlabkey"], function(Classify, $, _, Lookups, XLABKEY) {
+    var isMobileApp = function() {
+        var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+        if ( app ) {
+            // PhoneGap application
+            return true;
+        } else {
+            // Web page
+            return false;
+        }
+    };
+
     var EHRMobile = {
         Utils: {
             LoginFailureData: {}
         },
         Config: {
-            BaseURL: function() { return "" } //TODO: Make this function more robust, for PhoneGap
+            BaseURL: function() {
+                if (!isMobileApp()) {
+                    //TODO: grab this out of LABKEY client API.
+                    return "/labkey/";
+                }
+                else {
+                    //TODO: Make this function more robust, for PhoneGap
+                }
+            }
         },
         Authentication: {
             LoginFailureData: {}

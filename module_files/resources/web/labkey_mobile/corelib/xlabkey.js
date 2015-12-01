@@ -1,4 +1,4 @@
-define([], function() {
+define(['underscore'], function(_) {
     /*
      * External wrappers for LABKEY functions.  The main purpose of this is for Ajax involved
      * functions, so that we can control the login screen.
@@ -13,6 +13,10 @@ define([], function() {
                 callback(errorInfo);
             }
         }
+    };
+
+    var getContainer = function() {
+        return "WNPRC/EHR";
     };
 
     var XLABKEY = {};
@@ -41,7 +45,7 @@ define([], function() {
         };
 
         // Set a proper container path.
-        config.containerPath = "WNPRC/EHR";
+        config.containerPath = getContainer();
 
         // Wrap the Failure function
         var origFailure = config.failure || function() {};
@@ -64,7 +68,7 @@ define([], function() {
         };
 
         // Set a proper container path.
-        config.containerPath = "WNPRC/EHR";
+        config.containerPath = getContainer();
 
         // Wrap the Failure function
         var origFailure = config.failure || function() {};
@@ -87,7 +91,7 @@ define([], function() {
         };
 
         // Set a proper container path.
-        config.containerPath = "WNPRC/EHR";
+        config.containerPath = getContainer();
 
         // Wrap the Failure function
         var origFailure = config.failure || function() {};
