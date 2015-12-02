@@ -1,12 +1,15 @@
-define(["jquery"], function($) {
+define(["jquery", "path"], function($, path) {
     var LKHTTP = {};
 
+    var baseURL = function() {
+        return "http://localhost:9080/labkey/";
+    };
     var defaultContainerPath = function() {
         return "WNPRC/EHR";
     };
 
     var makeRequest = function(url, config) {
-        var useCors = false; // TODO: make this smarter
+        var useCors = true; // TODO: make this smarter
         config = config || {};
 
         if (useCors) {
@@ -22,38 +25,46 @@ define(["jquery"], function($) {
         return fetch(url, config);
     };
 
+    LKHTTP.login = function(username, password) {
+        var url = baseURL() + path.join('login','login.post');
+
+        var formData = new FormData();
+        formData.append('email', username);
+        formData.append('password', password);
+
+        return makeRequest(url, {
+            method: 'post',
+            body: formData
+        });
+    };
+
     LKHTTP.selectRows = function(schema, query, config) {
         // Check for required parameters
-        if (!schemaName) {
+        if (!schema) {
             throw "You must specify a schemaName!";
         }
-        if (!queryName) {
+        if (!query) {
             throw "You must specify a queryName!";
         }
 
-        config.dataRegionName = config.dataRegionName || "query";
+        var params = {
+            schemaName: schema,
+            'query.queryName': query
+        };
+        _.each(config, function(value, key) {
+            params['query.' + key] = value;
+        });
 
-        var dataObject = LABKEY.Query.buildQueryParams(
-            schemaName,
-            queryName,
-            config.filterArray,
-            config.sort,
-            config.dataRegionName
-        );
-
-        if (config.viewName) {
-            dataObject[config.dataRegionName + '.viewName'] = config.viewName;
-        }
-
-        if (config.columns) {
-            var columns = config.columns;
+        if (params['query.columns']) {
+            var columns = params['query.columns'];
 
             if (_.isArray(columns)) {
                 columns = columns.join(",");
             }
-            dataObject[config.dataRegionName + '.columns'] = columns;
+            params['query.columns'] = columns;
         }
 
+        /*
         if (config.parameters) {
             for (var propName in config.parameters) {
                 if (config.parameters.hasOwnProperty(propName)) {
@@ -61,15 +72,18 @@ define(["jquery"], function($) {
                 }
             }
         }
+        */
 
-        var requestURL =  LABKEY.ActionURL.buildURL('query', 'getQuery', config.containerPath);
+        var requestURL =  baseURL() + path.join('query', defaultContainerPath(), 'selectRows.api');
 
-        var params = $.params(dataObject);
+        var params = $.param(params);
         if (params.length > 0) {
             requestURL += "?" + params;
         }
 
-        return makeRequest(requestURL);
+        return makeRequest(requestURL).then(function(response) {
+            return response.json();
+        });
     };
 
     return LKHTTP;
