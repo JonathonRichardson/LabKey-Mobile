@@ -192,7 +192,7 @@ exports.addTasks = function(gulp) {
             });
         }));
 
-        var staticContentFilter = filter(['**/*.jsx','**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
+        var staticContentFilter = filter(['**/*.es6', '**/*.jsx','**/*.js', '**/*.html', '**/*.java', '**/*.jsp', '**/*.css'], {restore: true});
         core = core.pipe(staticContentFilter);
         core = core.pipe(replace('labkey_mobile', getModuleName()));
 
