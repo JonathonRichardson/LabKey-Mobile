@@ -15,7 +15,7 @@ requirejs(["jquery"], function($) {
         $.mobile.loader.prototype.options.textVisible = true;
         $.mobile.loader.prototype.options.text = "Loading...";
 
-        requirejs(["knockout", "jquery", "jquery.breadcrumb", "jqm-easy", "knockout.switch", "knockout.punches"], function(ko, $) {
+        requirejs(["knockout", "jquery", "jquery.breadcrumb", "jqm-easy", "knockout.switch", "knockout.punches", "lkhttp"], function(ko, $) {
             // Enable punches for all pages.
             ko.punches.enableAll();
 
