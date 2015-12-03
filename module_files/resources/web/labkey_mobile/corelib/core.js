@@ -39,7 +39,35 @@ function($,        mobile,          _,            LKHTTP,   ko,         mapping,
         }
     };
 
+    var getFullHash = function() {
+        return document.location.hash;
+    };
+    var getParamString = function() {
+        var fullHash = getFullHash();
+        return fullHash.substr(fullHash.indexOf('?') + 1);
+    };
+    var getParamObj = function() {
+        var params = getParamString();
+
+        var paramObj = {};
+
+        _.each(params.split('&'), function(token) {
+            var keyValue = token.split('=');
+
+            var key = keyValue[0];
+            var value = keyValue[1];
+
+            paramObj[key] = value;
+        });
+
+        return paramObj;
+    };
+
     var URLUtils = {
+        getPageNameFromCurrentURL: function() {
+            var params = getParamObj();
+            return URLUtils.decodePageName(params.page || 'LandingPage');
+        },
         encodeState: function(data) {
             return encodeURI(JSON.stringify(data));
         },
