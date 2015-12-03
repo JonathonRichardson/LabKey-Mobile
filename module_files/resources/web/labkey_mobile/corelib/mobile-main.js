@@ -15,7 +15,7 @@ requirejs(["jquery"], function($) {
         $.mobile.loader.prototype.options.textVisible = true;
         $.mobile.loader.prototype.options.text = "Loading...";
 
-        requirejs(["knockout", "jquery", "jquery.breadcrumb", "jqm-easy", "knockout.switch", "knockout.punches", "lkhttp"], function(ko, $) {
+        requirejs(["knockout", "jquery", "lkhttp", "jquery.breadcrumb", "jqm-easy", "knockout.switch", "knockout.punches"], function(ko, $, LKHTTP) {
             // Enable punches for all pages.
             ko.punches.enableAll();
 
@@ -60,18 +60,14 @@ requirejs(["jquery"], function($) {
                 template:  { require: "text!../components/ehr-animalview.html"}
             });
 
-            requirejs(["core", "jquery", "knockout", "ehrmobile", "knockout.mapping", "xlabkey", "display"], function(core, $, ko, EHRMobile) {
+            requirejs(["core", "jquery", "path", "knockout", "ehrmobile", "knockout.mapping", "xlabkey", "display"], function(core, $, path, ko, EHRMobile) {
                 $(document).ready(function () {
                     ko.applyBindings(PageViewModel);
 
-                    EHRMobile.Utils.TestLogin(function(successful) {
-                        if ( successful ) {
-                            document.dispatchEvent(new CustomEvent('loginsuccess'));
-                        }
-                        else {
-                            document.dispatchEvent(new CustomEvent("notauthorized"));
-                        }
-
+                    return LKHTTP.get(LKHTTP.baseURL() + path.join('security', 'home', 'ensureLogin.view')).then(function(response) {
+                        return EHRMobile.Utils.LoginBootstrap();
+                    }).then(function() {
+                        PageViewModel.LoadPage();
                         $('.div-hider').fadeOut();
                     });
                 });

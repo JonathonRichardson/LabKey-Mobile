@@ -1,5 +1,5 @@
-define(["jquery", "jquery.mobile", "underscore", "knockout", "knockout.mapping", "../corelib/content-manifest","display", "jquery.ui"],
-function($,        mobile,          _,            ko,         mapping,            pageManifest) {
+define(["jquery", "jquery.mobile", "underscore", "lkhttp", "knockout", "knockout.mapping", "../corelib/content-manifest","display", "jquery.ui"],
+function($,        mobile,          _,            LKHTTP,   ko,         mapping,            pageManifest) {
     ko.mapping = mapping;
     $.mobile = mobile;
 
@@ -8,8 +8,7 @@ function($,        mobile,          _,            ko,         mapping,          
     PageViewModel = {
         loginInfo: {
             username: ko.observable(),
-            password: ko.observable(),
-            state:    ko.observable()
+            password: ko.observable()
         },
         user: ko.mapping.fromJS({
             UserId: "-1",
@@ -19,50 +18,26 @@ function($,        mobile,          _,            ko,         mapping,          
         PageViewModels: {}
     };
 
-    $(document).on('loginsuccess', function() {
-        PageViewModel.loginInfo.state('loggingin');
-    });
-
-    $(document).on('notauthorized', function(e) {
-        PageViewModel.loginInfo.state('');
-        $('#mainContentPage').addClass('blur-filter');
-        $('#loginPage').popup('open');
-    });
-
-    $(document).on('logincompleted', function(e) {
-        var eventData = e.originalEvent.detail;
-
-        if ( eventData && 'displayName' in eventData ) {
-            PageViewModel.user.DisplayName(eventData.displayName);
+    PageViewModel.Authentication = {
+        showLoginPopup: function() {
+            $('#mainContentPage').addClass('blur-filter');
+            $('#loginPage').popup('open');
+        },
+        hideLoginPopup: function() {
+            $('.blur-filter').removeClass('blur-filter');
+            $('#loginPage').popup('close');
+        },
+        displayLoginFailure: function() {
+            $('#loginDialog').append($(document.createElement('p')).text("login failed..."));
+        },
+        attemptToLogin: function(username, password) {
+            LKHTTP.login(username, password).then(function() {
+                PageViewModel.Authentication.hideLoginPopup();
+            }).catch(function() {
+                PageViewModel.Authentication.displayLoginFailure();
+            });
         }
-
-        var curHashParams = location.hash;
-        if ( curHashParams.indexOf("?") === -1 ) {
-            curHashParams = "";
-        }
-        else {
-            curHashParams = curHashParams.substr(curHashParams.indexOf("?") + 1);
-        }
-        var pageParam = (curHashParams.match(/page=([A-Za-z.]*)/) || [])[1];
-        var page = URLUtils.decodePageName( pageParam || "LandingPage");
-
-        $('.blur-filter').removeClass('blur-filter');
-        $('#loginPage').popup('close');
-        PageViewModel.LoadPage(page);
-    });
-
-
-    // Add a line to the bottom of the dialog whenever we fail to log in.
-    $(document).on('loginfailure', function() {
-        // TODO:  Decouple this from the UI
-        $('#loginDialog').append($(document.createElement('p')).text("login failed..."));
-
-        PageViewModel.loginInfo.state('');
-    });
-
-    $(document).on('loginstartattempt', function() {
-        PageViewModel.loginInfo.state('loggingin')
-    });
+    };
 
     var URLUtils = {
         encodeState: function(data) {
@@ -91,14 +66,10 @@ function($,        mobile,          _,            ko,         mapping,          
     PageViewModel.URLUtils = URLUtils;
 
     PageViewModel.login = function() {
-        document.dispatchEvent(new CustomEvent('attemptlogin', {
-            'detail': {
-                username: ko.unwrap(PageViewModel.loginInfo.username),
-                password: ko.unwrap(PageViewModel.loginInfo.password)
-            }
-        }));
+        var username = ko.unwrap(PageViewModel.loginInfo.username);
+        var password = ko.unwrap(PageViewModel.loginInfo.password);
 
-        document.dispatchEvent(new CustomEvent('loginstartattempt'));
+        PageViewModel.Authentication.attemptToLogin(username, password);
     };
 
     PageViewModel.logout = function() {
@@ -106,6 +77,9 @@ function($,        mobile,          _,            ko,         mapping,          
     };
 
     PageViewModel.LoadPage = function(pageName, data) {
+        if (_.isUndefined(pageName)) {
+            pageName = "LandingPage";
+        }
         var fullPageReference = PageViewModel.URLUtils.encodePageReference( pageName, data );
         $.mobile.changePage( fullPageReference, { allowSamePageTransition: true, transition: 'none' } );
     };

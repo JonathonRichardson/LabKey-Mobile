@@ -1,4 +1,4 @@
-define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, ko, _, XLABKEY, Classify) {
+define(["jquery", "knockout", "underscore", "xlabkey", "classify", "lkhttp"], function($, ko, _, XLABKEY, Classify, LKHTTP) {
     var getAccessorFunction = function(accessor) {
         // If we're already a function, return that.
         if (_.isFunction(accessor)) {
@@ -29,20 +29,18 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
             loadData: function() {
                 var self = this;
 
-                XLABKEY.Query.selectRows({
-                    schemaName: self.schemaName,
-                    queryName:  self.queryName,
-                    success: function (data) {
-                        _.each(data.rows, function (row, index, list) {
-                            self.data[self.getKeyFunction(row)] = row;
-                            self.ko$values.push({
-                                key:   self.getKeyFunction(row),
-                                value: self.getValueFunction(row)
-                            });
+                return LKHTTP.selectRows(self.schemaName, self.queryName).then(function (data) {
+                    _.each(data.rows, function (row, index, list) {
+                        self.data[self.getKeyFunction(row)] = row;
+                        self.ko$values.push({
+                            key:   self.getKeyFunction(row),
+                            value: self.getValueFunction(row)
                         });
 
-                        self.ko$dataLoaded(true);
-                    }
+                        return Promise.resolve();
+                    });
+
+                    self.ko$dataLoaded(true);
                 });
             },
             getValue: function(code) {
@@ -78,9 +76,11 @@ define(["jquery", "knockout", "underscore", "xlabkey", "classify"], function($, 
         },
         methods: {
             loadAll: function() {
+                var promises = [];
                 $.each(this.lookupTables(), function(index, value) {
-                    value.loadData();
+                    promises.push(value.loadData());
                 });
+                return Promise.all(promises);
             },
             addTable: function(config) {
                 var newTable = new LookupTable(config);
