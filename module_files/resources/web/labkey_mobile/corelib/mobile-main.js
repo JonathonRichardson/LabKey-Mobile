@@ -64,10 +64,12 @@ requirejs(["jquery"], function($) {
                 $(document).ready(function () {
                     ko.applyBindings(PageViewModel);
 
+                    var page = PageViewModel.URLUtils.getPageNameFromCurrentURL();
+
                     return LKHTTP.get(LKHTTP.baseURL() + path.join('security', 'home', 'ensureLogin.view')).then(function(response) {
                         return EHRMobile.Utils.LoginBootstrap();
                     }).then(function() {
-                        PageViewModel.LoadPage();
+                        PageViewModel.LoadPage(page);
                         $('.div-hider').fadeOut();
                     });
                 });
