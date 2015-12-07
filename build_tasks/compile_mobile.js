@@ -34,13 +34,17 @@ exports.addTasks = function(gulp) {
     var babelDisclaimer = fs.readFileSync(path.join(buildTasksDir, 'Babel-Disclaimer.txt')) + '\n\n';
     var babelCompile = function(stream) {
         // Set a filter to just grab the stuff we want...
-        var jsFilter = filter(['**/*.jsx', '**/*.es6', '**/*.js6'], {restore: true});
+        var jsFilter = filter(['**/*.es6'], {restore: true});
         stream = stream.pipe(jsFilter);
+
+        // Compile modules
+        stream = stream.pipe(babel({
+            "plugins": ["transform-es2015-modules-amd", "syntax-async-functions"]
+        }));
 
         // Now, transform async functions to ES6 generators...
         stream = stream.pipe(babel({
             "plugins": ["transform-async-to-generator"]
-
         }));
 
         // And, transform all of that es6 down to es5...

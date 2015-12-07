@@ -1,14 +1,10 @@
-define([],function() {
-    var returnObj = {};
+var interpolatedWord = "success";
+var stringTest = `This is a ${interpolatedWord}!`;
 
-    var interpolatedWord = "success";
-    returnObj.stringTest = `This is a ${interpolatedWord}!`;
+var generator123 = function* () {
+    yield 1;
+    yield 2;
+    return 3;
+};
 
-    returnObj.generator123 = function* () {
-        yield 1;
-        yield 2;
-        return 3;
-    };
-
-    return returnObj;
-});
+export {generator123, stringTest};
