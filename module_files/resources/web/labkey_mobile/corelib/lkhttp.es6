@@ -9,6 +9,7 @@ define(["jquery", "path", "knockout"], function($, path, ko) {
     var defaultContainerPath = function() {
         return "WNPRC/EHR";
     };
+    LKHTTP.defaultContainerPath = defaultContainerPath;
 
     var makeURLForHTTPAction = function(action) {
         return baseURL() + path.join('query', defaultContainerPath(), `${action}.api`);
