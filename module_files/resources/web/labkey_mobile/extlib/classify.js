@@ -1,13 +1,7 @@
 define(["require","exports","module","jquery","underscore"],function(require,exports,module,$,_){
 
     var Classify = {};
-    var ko;
-    try {
-        ko = require('knockout');
-    }
-    catch(error) {
-        // Do nothing.
-    }
+    var $ = $ || jQuery;
 
     var noOp = function() {};
 
@@ -29,7 +23,7 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
 
     var getParentRecursive = function(parents) {
         if (!_.isArray(parents)) {
-            parents = [parents]
+            parents = [parents];
         }
 
         var nextParent = getParent( parents[0] );
@@ -54,6 +48,19 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
                 newClassObj._innerConstructor.call(self, constructorConfig);
             });
 
+            var ko = ko;
+            if ('ko' in window) {
+                ko = window.ko;
+            }
+            else if (_.isUndefined(ko)) {
+                try {
+                    ko = require('knockout');
+                }
+                catch(error) {
+                    // Do nothing.
+                }
+            }
+
             // Only support computed methods if knockout has been loaded
             if (!_.isUndefined(ko) && !_.isUndefined(self._ko_computeds)) {
                 $.each(self._ko_computeds, function (key, value) {
@@ -65,7 +72,7 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
                     }
                     else if (_.keys(value).length > 0) {
                         if ('function' in value) {
-                            functionToWrap = value.function;
+                            functionToWrap = value['function']; // function is a reserved word and will cause YUICompressor to scream
                         }
                         if ('subscription' in value) {
                             subscription = value.subscription;
@@ -132,6 +139,25 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
             });
         }
 
+        // Make a container for static variables.
+        var staticVars = {};
+        newObject.staticVars = staticVars;
+
+        // Allow for a function to initialize static variables.
+        if ('staticInit' in config) {
+            config.staticInit(staticVars);
+        }
+
+        // Now, apply any static methods.
+        if ('staticMethods' in config) {
+            $.each(config.staticMethods, function(functionName, functionDefinition) {
+                if (!(functionName in newObject)) {
+                    newObject[functionName] = functionDefinition;
+                    newObject[functionName].bind(staticVars);
+                }
+            });
+        }
+
         return newObject;
     };
 
@@ -155,7 +181,7 @@ define(["require","exports","module","jquery","underscore"],function(require,exp
         }
     });
 
-    Classify.Version = '0.0.37';
+    Classify.Version = '0.0.44';
 
     return Classify;
 
